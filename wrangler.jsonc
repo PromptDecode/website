@@ -24,6 +24,31 @@
     "directory": "dist",
     "not_found_handling": "404-page"
   },
+  // Keep the workers.dev origin alive. Wrangler DISABLES it whenever this key
+  // is absent, which took the site off the air the moment a `routes` block was
+  // added: the custom domain was rejected, workers.dev was switched off anyway,
+  // and every URL 404'd.
+  "workers_dev": true,
+  // The custom domain is READY BUT NOT ENABLED, and enabling it is two steps
+  // in this order. Cloudflare refuses to attach a Worker to a hostname that
+  // already has DNS records of its own, and promptdeco.de still carries the
+  // three A records that came across with the zone import from Spaceship
+  // (54.149.79.189, 34.216.117.25 and a 192.0.0.1 placeholder), all pointing
+  // at the old registrar parking page.
+  //
+  //   1. Delete those three A records for the apex, in the Cloudflare
+  //      dashboard for promptdeco.de or with a token that has Zone:DNS:Edit.
+  //   2. Uncomment the block below and run tools/deploy.sh. Cloudflare then
+  //      creates and manages the record for the hostname itself.
+  //
+  // Left commented on purpose: while the records exist, `wrangler deploy`
+  // exits non-zero on the custom domain even though the upload succeeded,
+  // which aborts tools/deploy.sh before it can verify what went live. The
+  // apex only; if www is ever wanted it should redirect here, not answer.
+  //
+  // "routes": [
+  //   { "pattern": "promptdeco.de", "custom_domain": true }
+  // ],
   "observability": {
     "enabled": true
   }
