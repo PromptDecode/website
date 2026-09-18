@@ -171,7 +171,7 @@ organisation avatars, so `org-avatar.png` is uploaded by hand at
 
 ## Deploy
 
-Cloudflare Pages, project `promptdecode`, on the **Factory0** account:
+Live at **https://promptdeco.de**, on the **Factory0** Cloudflare account.
 
 ```sh
 tools/deploy.sh --dry-run    # what would ship
@@ -179,19 +179,39 @@ tools/deploy.sh              # ship origin/main
 ```
 
 `deploy.sh` never deploys the working copy. It checks `origin/main` out into a
-temporary worktree, runs `tools/check.py`, builds `dist/`, and deploys that with
-the commit hash recorded on the Pages deployment. Merge first, then deploy.
+temporary worktree, runs `tools/check.py`, builds `dist/` there, and deploys
+that. Merge first, then deploy. Afterwards it asks the live origin for
+`tools/`, `COPY.md`, `README.md`, `LICENSE`, `.git/config` and `wrangler.jsonc`
+and **fails unless every one of them 404s**, because a deploy that uploads the
+wrong directory reports success exactly like one that does not.
 
-`deploy.sh` also probes the live origin afterwards for `tools/`, `COPY.md`,
-`README.md`, `LICENSE` and `.git/config`, and fails if any of them answers 200.
+### It is a Worker, not a Pages project
 
-**Do not run `wrangler pages project create` from the repository root.** On the
-Workers-backed Pages it does not only create the project, it deploys the
-current working directory: run from the root on 2026-09-18 it published all 92
-files of the checkout, `tools/`, `COPY.md` and `.git/config` included, which is
-the whole thing the allowlist exists to prevent. `deploy.sh` now creates the
-project from inside the built `dist/`, so the worst it can upload is what was
-going to ship anyway.
+Cloudflare Pages is now served by Workers, and `wrangler pages deploy` no
+longer works against a project that current wrangler created. `wrangler.jsonc`
+describes a Worker with no code of its own serving `dist/`, deployed with plain
+`wrangler deploy`. `_headers` and `_redirects` are still honoured, CSP
+included.
+
+Three things about that config are load-bearing, and each one broke something
+on the way to this paragraph:
+
+- **`assets.directory` must stay `dist`.** `wrangler pages project create`
+  scaffolds this file with `"directory": "."`, which publishes the entire
+  repository: on 2026-09-18 that put `tools/`, `COPY.md`, `README.md` and
+  `.git/config` on the live origin. Worse, the scaffolded file got committed,
+  so every later deploy rebuilt it and republished the lot. `tools/check.py`
+  now fails if the directory or the Worker name changes.
+- **`workers_dev` must stay `true`.** Wrangler disables the workers.dev origin
+  whenever that key is absent, which took the site off the air entirely the
+  first time a `routes` block was added.
+- **The domain is a route, not a custom domain.** A custom domain makes
+  Cloudflare create and own the DNS record for the hostname, and it refuses
+  while the apex already has one: `Hostname 'promptdeco.de' already has
+  externally managed DNS records [code: 100117]`. The route rides the record
+  that is already there, which works only because that record is **proxied**.
+  If the apex is ever switched to DNS-only, the route stops matching and the
+  site drops off the domain with no deploy error to show for it.
 
 ## House rules for edits
 
