@@ -53,9 +53,43 @@ if [ "$dry_run" = 1 ]; then
   exit 0
 fi
 
+# Create the project on first run, from INSIDE dist/.
+#
+# `wrangler pages project create` does not just create a project: on the
+# Workers-backed Pages it also deploys the current working directory. Run from
+# the repository root it published all 92 files of the checkout, tools/,
+# COPY.md and .git/config included, which is the exact leak build-dist.sh's
+# allowlist exists to prevent. Running it from dist/ means the worst it can
+# upload is the set of files that were going to ship anyway.
+if ! npx --yes wrangler@4 pages project list 2>/dev/null | grep -q '\bpromptdecode\b'; then
+  echo "creating the Pages project (first deploy)"
+  (cd "$tmp/tree/dist" && npx --yes wrangler@4 pages project create promptdecode --production-branch=main)
+fi
+
 npx --yes wrangler@4 pages deploy "$tmp/tree/dist" \
   --project-name=promptdecode \
   --branch=main \
   --commit-hash="$sha" \
   --commit-message="$subject" \
   --commit-dirty=false
+
+# What is live must be the allowlist and nothing else. A deploy that uploads
+# the repository instead of dist/ looks entirely successful, so the only way to
+# know is to ask the origin for something that should not exist.
+echo
+echo "checking that no repository file is served:"
+base="https://promptdeco.de"
+curl -sf -o /dev/null --max-time 10 "$base/" 2>/dev/null || base="https://promptdecode.pages.dev"
+leaked=0
+for path in /tools/check.py /tools/deploy.sh /COPY.md /README.md /LICENSE /.git/config; do
+  code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$base$path" || echo 000)
+  case "$code" in
+    200) echo "  LEAK $path is public ($base$path)"; leaked=$((leaked + 1)) ;;
+    *)   echo "  ok   $path -> $code" ;;
+  esac
+done
+if [ "$leaked" -gt 0 ]; then
+  echo "$leaked repository file(s) are being served. Redeploy dist/, do not leave this live." >&2
+  exit 1
+fi
+echo "clean: $base serves the allowlist only"

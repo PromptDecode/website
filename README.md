@@ -182,11 +182,16 @@ tools/deploy.sh              # ship origin/main
 temporary worktree, runs `tools/check.py`, builds `dist/`, and deploys that with
 the commit hash recorded on the Pages deployment. Merge first, then deploy.
 
-**The domain is not on Cloudflare yet.** `promptdeco.de` resolves through
-Spaceship nameservers (`launch1.spaceship.net`). Until the zone is added to the
-Factory0 account and the nameservers are changed at the registrar, a deploy
-serves on `*.pages.dev` only, and the canonical URL, sitemap and JSON-LD on the
-page point at a host that does not answer yet.
+`deploy.sh` also probes the live origin afterwards for `tools/`, `COPY.md`,
+`README.md`, `LICENSE` and `.git/config`, and fails if any of them answers 200.
+
+**Do not run `wrangler pages project create` from the repository root.** On the
+Workers-backed Pages it does not only create the project, it deploys the
+current working directory: run from the root on 2026-09-18 it published all 92
+files of the checkout, `tools/`, `COPY.md` and `.git/config` included, which is
+the whole thing the allowlist exists to prevent. `deploy.sh` now creates the
+project from inside the built `dist/`, so the worst it can upload is what was
+going to ship anyway.
 
 ## House rules for edits
 
