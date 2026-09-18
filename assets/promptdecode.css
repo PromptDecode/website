@@ -519,6 +519,10 @@ code { font-family: var(--mono); font-size: .92em; }
   color: var(--muted);
 }
 .foot__links { display: flex; gap: 20px; flex-wrap: wrap; }
+/* The venture credit. Underlined so it reads as attribution in a sentence
+   rather than as one more item in the link row beside it. */
+.foot__fz { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.foot__fz:hover { color: var(--accent); }
 .foot__fine {
   max-width: var(--wrap);
   margin: 0 auto;
