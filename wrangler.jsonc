@@ -46,9 +46,18 @@
   // which aborts tools/deploy.sh before it can verify what went live. The
   // apex only; if www is ever wanted it should redirect here, not answer.
   //
-  // "routes": [
-  //   { "pattern": "promptdeco.de", "custom_domain": true }
-  // ],
+  // A route, not a custom domain. A custom domain makes Cloudflare create and
+  // own the DNS record for the hostname, so it refuses while the apex already
+  // has a record of its own ("already has externally managed DNS records
+  // [code: 100117]"). A route instead rides the record that is already there,
+  // which only works because it is proxied: the apex resolves to Cloudflare
+  // edge addresses, so requests reach the edge and this pattern claims them.
+  //
+  // If the apex ever becomes DNS-only (grey cloud), this route stops matching
+  // and the site drops off the domain with no deploy error to show for it.
+  "routes": [
+    { "pattern": "promptdeco.de/*", "zone_name": "promptdeco.de" }
+  ],
   "observability": {
     "enabled": true
   }
