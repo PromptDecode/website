@@ -195,7 +195,30 @@ for path in ("index.html", "404.html", "llms.txt", "README.md", "COPY.md"):
         if spelling in body:
             fail(f"{path}: contains an em-dash ({spelling!r}); the house style uses a middle dot or a full stop")
 
-# 7. llms.txt keeps its guard.
+# 7. The deploy config still points at the built output.
+#    `wrangler pages project create` scaffolds this file with `"directory": "."`,
+#    which publishes the whole repository. It did, on 2026-09-18.
+wrangler = ROOT / "wrangler.jsonc"
+if not wrangler.exists():
+    fail("wrangler.jsonc is missing; deploy.sh needs it to know what to upload")
+else:
+    # jsonc: strip whole-line // comments, which is all this file uses.
+    raw = "\n".join(l for l in wrangler.read_text(encoding="utf-8").splitlines()
+                    if not l.lstrip().startswith("//"))
+    try:
+        cfg = json.loads(raw)
+    except ValueError as e:
+        fail(f"wrangler.jsonc: does not parse: {e}")
+    else:
+        directory = cfg.get("assets", {}).get("directory")
+        if directory != "dist":
+            fail(f"wrangler.jsonc: assets.directory is {directory!r}, not 'dist'; "
+                 "a deploy would publish that directory verbatim, allowlist and all")
+        if cfg.get("name") != "promptdecode":
+            fail(f"wrangler.jsonc: name is {cfg.get('name')!r}, not 'promptdecode'; "
+                 "deploying under another name publishes a second Worker at a different URL")
+
+# 8. llms.txt keeps its guard.
 if "PLANNED" not in llms or "## Shipping today" not in llms:
     fail("llms.txt: lost the built/unbuilt split")
 

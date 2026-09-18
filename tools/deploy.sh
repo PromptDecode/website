@@ -53,25 +53,16 @@ if [ "$dry_run" = 1 ]; then
   exit 0
 fi
 
-# Create the project on first run, from INSIDE dist/.
+# `wrangler deploy`, not `wrangler pages deploy`: Cloudflare Pages is now served
+# by Workers and the pages subcommands no longer work against a project current
+# wrangler created. wrangler.jsonc in the worktree names the Worker and points
+# at dist/, so this uploads the allowlist and nothing else.
 #
-# `wrangler pages project create` does not just create a project: on the
-# Workers-backed Pages it also deploys the current working directory. Run from
-# the repository root it published all 92 files of the checkout, tools/,
-# COPY.md and .git/config included, which is the exact leak build-dist.sh's
-# allowlist exists to prevent. Running it from dist/ means the worst it can
-# upload is the set of files that were going to ship anyway.
-if ! npx --yes wrangler@4 pages project list 2>/dev/null | grep -q '\bpromptdecode\b'; then
-  echo "creating the Pages project (first deploy)"
-  (cd "$tmp/tree/dist" && npx --yes wrangler@4 pages project create promptdecode --production-branch=main)
-fi
-
-npx --yes wrangler@4 pages deploy "$tmp/tree/dist" \
-  --project-name=promptdecode \
-  --branch=main \
-  --commit-hash="$sha" \
-  --commit-message="$subject" \
-  --commit-dirty=false
+# Do not run `wrangler pages project create` to set this up. It does not only
+# create a project, it deploys the current working directory, and it scaffolds
+# a wrangler.jsonc with `"directory": "."` that republishes the whole checkout
+# on every later deploy.
+(cd "$tmp/tree" && npx --yes wrangler@4 deploy --message "$subject")
 
 # What is live must be the allowlist and nothing else. A deploy that uploads
 # the repository instead of dist/ looks entirely successful, so the only way to

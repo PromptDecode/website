@@ -1,11 +1,30 @@
+// Cloudflare deploy config.
+//
+// Cloudflare Pages is now served by Workers, and `wrangler pages deploy` no
+// longer works against a project created by current wrangler. This is the
+// Workers form of the same thing: a Worker with no code of its own, serving a
+// directory of static assets.
+//
+// `directory` is the dangerous line. `wrangler pages project create` scaffolds
+// this file with `"directory": "."`, which publishes the entire repository: on
+// 2026-09-18 that put tools/, COPY.md, README.md, LICENSE and .git/config on
+// the live origin, which is the whole thing the allowlist exists to prevent.
+// It must stay pointed at the built output that tools/build-dist.sh assembles.
+//
+// `name` matters too: it is the deployed Worker, and changing it publishes a
+// second one at a different URL rather than updating this one.
+//
+// tools/check.py fails if either line changes, and tools/deploy.sh re-checks
+// the live origin after every deploy.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "promptdecode-website",
+  "name": "promptdecode",
   "compatibility_date": "2026-09-18",
+  "assets": {
+    "directory": "dist",
+    "not_found_handling": "404-page"
+  },
   "observability": {
     "enabled": true
-  },
-  "assets": {
-    "directory": "."
   }
 }
