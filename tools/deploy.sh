@@ -69,18 +69,37 @@ fi
 # know is to ask the origin for something that should not exist.
 echo
 echo "checking that no repository file is served:"
-base="https://promptdeco.de"
-curl -sf -o /dev/null --max-time 10 "$base/" 2>/dev/null || base="https://promptdecode.pages.dev"
-leaked=0
-for path in /tools/check.py /tools/deploy.sh /COPY.md /README.md /LICENSE /.git/config; do
+
+# Find an origin that actually answers. The first version of this check fell
+# back to a hostname that did not exist, got a connection error for every path,
+# counted each one as "not 200" and reported the site clean. A verification that
+# passes when it cannot reach anything is worse than no verification, so an
+# unreachable origin is a failure here, and so is any code other than 404.
+base=""
+for candidate in "https://promptdeco.de" "https://promptdecode.earthos-waitlist.workers.dev"; do
+  if [ "$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$candidate/" || true)" = "200" ]; then
+    base="$candidate"
+    break
+  fi
+  echo "  (no answer from $candidate)"
+done
+if [ -z "$base" ]; then
+  echo "could not reach any origin to verify the deploy; check by hand before leaving this live" >&2
+  exit 1
+fi
+echo "  origin $base"
+
+bad=0
+for path in /tools/check.py /tools/deploy.sh /COPY.md /README.md /LICENSE /.git/config /wrangler.jsonc; do
   code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$base$path" || echo 000)
   case "$code" in
-    200) echo "  LEAK $path is public ($base$path)"; leaked=$((leaked + 1)) ;;
-    *)   echo "  ok   $path -> $code" ;;
+    404) echo "  ok   $path -> 404" ;;
+    200) echo "  LEAK $path is public ($base$path)"; bad=$((bad + 1)) ;;
+    *)   echo "  ??   $path -> $code (expected 404)"; bad=$((bad + 1)) ;;
   esac
 done
-if [ "$leaked" -gt 0 ]; then
-  echo "$leaked repository file(s) are being served. Redeploy dist/, do not leave this live." >&2
+if [ "$bad" -gt 0 ]; then
+  echo "$bad path(s) did not 404. Redeploy dist/, do not leave this live." >&2
   exit 1
 fi
 echo "clean: $base serves the allowlist only"
