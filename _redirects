@@ -1,0 +1,7 @@
+# Cloudflare Pages redirects.
+# Short, stable links for READMEs and chat. Temporary (302) on purpose: the
+# targets live on GitHub and may move.
+
+/github  https://github.com/PromptDecode  302
+/source  https://github.com/PromptDecode  302
+/decode  /#demo                           302

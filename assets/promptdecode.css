@@ -1,0 +1,562 @@
+/* promptdecode · promptdeco.de
+   One stylesheet for one page. Tokens first, then layout, then components.
+   Ported by hand from the Claude Design canvas `promptdecode.dc.html`, which
+   held its styles inline; the token names are the canvas's own.
+
+   Themes. Dark is the design's default, but the page follows the reader's
+   system preference when they have not chosen, so that a light-mode visitor
+   is not flashed a black page before the script runs. `data-theme` on <html>
+   is an explicit choice by the toggle and always wins. The Content-Security-
+   Policy forbids inline script, so there is no head snippet to set it earlier
+   than this. */
+
+:root {
+  --bg: #000000;
+  --fg: #ece9e2;
+  --hidden: #232730;
+  --muted: #8d929b;
+  --line: #1c1f25;
+  --surface: #0b0c0f;
+  --accent: #f2b53a;
+  --accent-ink: #14161a;
+
+  --wrap: 1040px;
+  --snap: cubic-bezier(.2, 0, 0, 1);
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f4f1ea;
+    --fg: #14161a;
+    --hidden: #ddd8cc;
+    --muted: #63676f;
+    --line: #e0dbd0;
+    --surface: #faf8f3;
+    --accent: #9a5a00;
+    --accent-ink: #f4f1ea;
+  }
+}
+
+:root[data-theme="light"] {
+  --bg: #f4f1ea;
+  --fg: #14161a;
+  --hidden: #ddd8cc;
+  --muted: #63676f;
+  --line: #e0dbd0;
+  --surface: #faf8f3;
+  --accent: #9a5a00;
+  --accent-ink: #f4f1ea;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Theme switching, and why there is no cross-fade.
+   Chrome does not restart a transition when the end value comes from a custom
+   property that changed on an ancestor: the element keeps painting the old
+   colour, indefinitely, and the page half-changes theme. The design canvas
+   transitioned the body's background and colour and hit exactly that. Since a
+   theme flip moves every token at once, transitions are suppressed for the one
+   frame it happens in, and the switch is instant. Hover and focus transitions
+   are untouched. */
+html.theming, html.theming *, html.theming *::before, html.theming *::after {
+  transition: none !important;
+}
+
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+h1, h2, h3, p, ul, pre, figure { margin: 0; }
+ul { padding: 0; list-style: none; }
+code { font-family: var(--mono); font-size: .92em; }
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 20;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 500 14px/1 var(--mono);
+  padding: 12px 16px;
+}
+.skip:focus { left: 0; }
+
+/* ---------------------------------------------------------------- chrome */
+
+.site {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.nav__brand { font-weight: 500; }
+.nav__links { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.nav__theme {
+  font: inherit;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: color 140ms, border-color 140ms;
+}
+.nav__theme:hover { color: var(--fg); border-color: var(--muted); }
+
+/* The header is sticky, so an anchor jump would otherwise park the section's
+   eyebrow and heading underneath it. Enough room for the two-row nav. */
+.band[id], .hero[id] { scroll-margin-top: 104px; }
+
+/* Under about 600px the nav wraps to two rows; tighten it so those rows cost
+   as little of a phone screen as possible. */
+@media (max-width: 600px) {
+  .nav { padding: 11px 16px; font-size: 12px; gap: 10px; }
+  .nav__links { gap: 13px; }
+  .nav__theme { padding: 3px 8px; }
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 12px 16px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.banner__dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ------------------------------------------------------------------ hero */
+
+.hero {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: clamp(72px, 14vh, 160px) 16px clamp(80px, 14vh, 160px);
+  min-height: calc(100svh - 160px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+}
+
+/* The wordmark. Every letter starts as an empty box: the shape of a character
+   a reviewer cannot read. They resolve left to right, and a seam sweeps
+   across as they do. The last two letters are the domain, so they are set in
+   the serif and keep the accent colour. */
+.wm {
+  position: relative;
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: clamp(38px, 9.2vw, 124px);
+  line-height: 1;
+  letter-spacing: -.03em;
+  display: flex;
+  cursor: default;
+  width: max-content;
+  max-width: 100%;
+}
+.wm__c {
+  display: inline-block;
+  transform-origin: 50% 56%;
+  border-radius: .04em;
+  transition: transform 140ms var(--snap), color 140ms var(--snap), box-shadow 140ms var(--snap);
+}
+.wm__c--serif {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.08em;
+  line-height: .93;
+  color: var(--accent);
+}
+.wm__c[data-hidden] {
+  color: transparent;
+  box-shadow: inset 0 0 0 .055em var(--hidden);
+  transform: scaleY(.64) scaleX(.86);
+}
+.wm__seam {
+  position: absolute;
+  top: -8%;
+  bottom: -8%;
+  width: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  pointer-events: none;
+  animation: pd-seam 540ms linear both;
+}
+@keyframes pd-seam { from { left: -2%; } to { left: 102%; } }
+
+.hero__lede {
+  max-width: 34ch;
+  font-size: clamp(20px, 2.4vw, 26px);
+  line-height: 1.4;
+  letter-spacing: -.01em;
+  text-wrap: pretty;
+}
+.hero__cta { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+
+/* ------------------------------------------------------------- structure */
+
+.band { border-top: 1px solid var(--line); }
+
+.sec {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: clamp(64px, 9vw, 120px) 16px;
+  display: grid;
+  gap: 32px;
+}
+.sec--split {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+  align-items: start;
+}
+.sec__head { display: grid; gap: 16px; }
+.sec h2 {
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  text-wrap: pretty;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.lede { max-width: 62ch; color: var(--muted); font-size: 17px; line-height: 1.55; text-wrap: pretty; }
+.note {
+  max-width: 68ch;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* Status chips. Two labels only, and they set the tense of the sentence
+   around them: `shipping` is deployed and usable, `planned` is not built. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.chip::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentcolor; }
+.chip--planned { color: var(--muted); border-color: var(--line); }
+.chip--shipping { color: var(--accent); border-color: color-mix(in oklab, var(--accent) 45%, transparent); }
+
+.btn {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 120ms var(--snap), filter 120ms, color 140ms;
+}
+.btn--accent { background: var(--accent); color: var(--accent-ink); padding: 12px 20px; }
+.btn--accent:hover { color: var(--accent-ink); filter: brightness(1.06); }
+.btn--accent:active { transform: scale(.97); }
+.btn--ghost { color: var(--muted); padding: 12px 0; }
+.btn--ghost:hover { color: var(--fg); }
+.btn--quiet { background: none; color: var(--muted); font-weight: 400; padding: 10px 4px; }
+.btn--quiet:hover { color: var(--fg); }
+
+/* ---------------------------------------------------------------- decoder */
+
+.dec {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  overflow: hidden;
+}
+/* A plain block, not a flex row: these bars are one sentence with a number
+   spliced into it ("input · 190 code points"), and flex would treat each text
+   node as an item and space them across the whole width. */
+.dec__bar {
+  display: block;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.dec__bar--mid { border-top: 1px solid var(--line); }
+.dec__input {
+  display: block;
+  width: 100%;
+  min-height: 150px;
+  resize: vertical;
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  font: 16px/1.55 var(--sans);
+  padding: 16px;
+  outline-offset: -2px;
+}
+.dec__input::placeholder { color: var(--muted); }
+.dec__actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+}
+.dec__out { border-top: 1px solid var(--line); }
+.dec__tokens {
+  padding: 16px;
+  font-size: 16px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+/* A revealed code point. The short form is the character the tag block
+   encodes; the U+ form is a class with no printable equivalent. */
+.tok {
+  display: inline-block;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 15px;
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+  padding: 0 1px;
+  border-radius: 2px;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity 200ms var(--snap), transform 200ms var(--snap);
+}
+.tok--hex { font-size: 12px; padding: 0 5px; margin: 0 2px; }
+.dec__out[data-shown] .tok,
+.dec__out[data-shown] .dec__payload { opacity: 1; transform: none; }
+.dec__payload {
+  padding: 18px 16px;
+  font: 500 15px/1.6 var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 260ms var(--snap), transform 260ms var(--snap);
+}
+.dec__payload[data-found] { color: var(--accent); }
+
+/* The scan sweep that plays while a decode runs. Decoration only. */
+.dec__scan {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--accent) 22%, transparent) 50%, var(--accent) 51%, transparent 52%);
+  animation: pd-scan 420ms var(--snap) both;
+}
+@keyframes pd-scan { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
+
+/* ---------------------------------------------------------------- engines */
+
+.engines {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+  gap: 24px;
+}
+.engine { display: grid; gap: 16px; align-content: start; }
+.engine__name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 16px;
+}
+.engine__body { color: var(--muted); font-size: 16px; line-height: 1.55; text-wrap: pretty; }
+
+.term {
+  font: 13px/1.65 var(--mono);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  color: var(--fg);
+}
+.term--lg { font-size: 14px; line-height: 1.7; padding: 20px; border: 0; border-radius: 0; }
+.term__dim { color: var(--muted); }
+.term__hit { color: var(--accent); font-weight: 500; }
+
+.snip { border: 1px solid var(--line); border-radius: 6px; background: var(--surface); overflow: hidden; }
+.snip__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ----------------------------------------------------------------- claims */
+
+.claims {
+  display: grid;
+  gap: 36px;
+  max-width: 26em;
+  font-family: var(--serif);
+  font-size: clamp(26px, 3.6vw, 46px);
+  line-height: 1.2;
+  letter-spacing: -.015em;
+  text-wrap: pretty;
+}
+.claims__lead { font-weight: 400; font-size: inherit; font-style: italic; }
+.claims__hi { color: var(--accent); font-style: normal; }
+
+/* ---------------------------------------------------------------- pricing */
+
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 24px;
+}
+.tier {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 28px;
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+.tier__name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+.tier__price { font-size: clamp(32px, 4vw, 44px); font-weight: 600; letter-spacing: -.03em; line-height: 1; }
+.tier__unit {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.tier__list { display: grid; gap: 8px; font-size: 15px; line-height: 1.5; color: var(--muted); }
+
+/* ----------------------------------------------------------------- footer */
+
+.site-foot { border-top: 1px solid var(--line); }
+.foot {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 32px 16px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+.foot__links { display: flex; gap: 20px; flex-wrap: wrap; }
+.foot__fine {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 16px 32px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------ reveal, 404 */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 320ms var(--snap), transform 320ms var(--snap);
+}
+[data-reveal][data-shown] { opacity: 1; transform: none; }
+[data-reveal][data-shown="1"] { transition-delay: 60ms; }
+[data-reveal][data-shown="2"] { transition-delay: 120ms; }
+[data-reveal][data-shown="3"] { transition-delay: 180ms; }
+[data-reveal][data-shown="4"] { transition-delay: 240ms; }
+[data-reveal][data-shown="5"] { transition-delay: 300ms; }
+
+/* Nothing is hidden until the script runs: if it never does, show everything. */
+.no-js [data-reveal] { opacity: 1; transform: none; }
+
+.oops {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: clamp(80px, 18vh, 200px) 16px;
+  display: grid;
+  gap: 24px;
+  justify-items: start;
+}
+.oops__code { font-family: var(--mono); font-size: clamp(48px, 12vw, 120px); line-height: 1; letter-spacing: -.04em; color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 1ms !important; animation: none !important; }
+  [data-reveal] { opacity: 1; transform: none; }
+}

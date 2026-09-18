@@ -1,0 +1,37 @@
+# Cloudflare Pages response headers.
+# CSS and JS are referenced with a ?v=<content hash> stamped by
+# tools/build-dist.sh, so the URL changes whenever the file does.
+#
+# connect-src 'none' is load-bearing, not boilerplate. The page promises that
+# nothing you paste into the decoder leaves your browser; this is the line that
+# makes the promise enforceable by the browser rather than by our good manners.
+# Any future feature that needs the network has to change this file, in a diff,
+# in public.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'
+
+/assets/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.svg
+  Cache-Control: public, max-age=604800
+
+# PNGs keep their filenames when regenerated, so a week, not immutable.
+/assets/*.png
+  Cache-Control: public, max-age=604800
+
+/llms.txt
+  Cache-Control: public, max-age=3600
+  Content-Type: text/plain; charset=utf-8
+
+/.well-known/security.txt
+  Content-Type: text/plain; charset=utf-8
