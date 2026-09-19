@@ -11,7 +11,7 @@ tense on the page.
 | :--- | :--- | :--- |
 | The decoder works and runs in the browser | banner, `01 · Decode`, `llms.txt` | `assets/promptdecode.js`, `decodeText`. No backend exists to run it on |
 | Nothing you paste is uploaded, stored or logged | decoder note, footer, `llms.txt` | The script contains no network call and `_headers` serves `connect-src 'none'`. `tools/check.py` fails on either changing |
-| The three classes it reads | decoder note, `llms.txt` | The ranges in `decodeText`. `tools/check.py` fails if the code and `llms.txt` disagree in either direction |
+| The three classes it reads | decoder note, `llms.txt` | The single source `tools/core/classes.json`, from which `tools/generate.py` writes the code, the README table and `llms.txt`. `tools/check.py` fails on any difference and runs the shared vectors in `tools/core/vectors.json` against the decoder |
 | Tag-block characters mirror printable ASCII at U+E0000 | `01 · Decode` | Unicode 16.0, Tags block. Demonstrable in the decoder itself |
 | Nothing else is built | banner, every `planned` chip, `llms.txt` | `github.com/PromptDecode` held no repository other than this site when the page was written |
 | No cookies, no analytics | footer | `index.html` loads `promptdecode.js` and Google Fonts, nothing else. `tools/check.py` fails on any other third-party script |
@@ -59,8 +59,10 @@ specifications, and no code exists for any of them.
 "If a class is not on the list, we do not detect it. The list is the claim."
 
 That sentence makes the list of Unicode classes a promise rather than a
-description, so `tools/check.py` compares the ranges implemented in
-`assets/promptdecode.js` against the code points named in `llms.txt` and fails
-in **both** directions: a class in the code that the prose does not name, and a
-class the prose promises that the code does not implement. Adding a class means
-changing both files, in one diff.
+description, so the list has one source, `tools/core/classes.json`:
+`tools/generate.py` writes the constants in `assets/promptdecode.js`, the
+README table and `llms.txt` from it, and `tools/check.py` regenerates all
+three and fails on any difference, in either direction, then runs the shared
+vectors in `tools/core/vectors.json` against the decoder. Adding a class means
+editing `tools/core/classes.json` and running `python3 tools/generate.py`, in
+one diff.
