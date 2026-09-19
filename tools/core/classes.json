@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "classes": [
+    {
+      "id": "tag",
+      "name": "Unicode tag block",
+      "ranges": [["E0000", "E007F"]]
+    },
+    {
+      "id": "bidi",
+      "name": "Bidirectional controls and overrides",
+      "ranges": [
+        ["061C", "061C"],
+        ["200E", "200E"],
+        ["200F", "200F"],
+        ["202A", "202A"],
+        ["202B", "202B"],
+        ["202C", "202C"],
+        ["202D", "202D"],
+        ["202E", "202E"],
+        ["2066", "2066"],
+        ["2067", "2067"],
+        ["2068", "2068"],
+        ["2069", "2069"]
+      ]
+    },
+    {
+      "id": "vs",
+      "name": "Variation selectors",
+      "ranges": [
+        ["FE00", "FE0F"],
+        ["E0100", "E01EF"]
+      ]
+    }
+  ]
+}
