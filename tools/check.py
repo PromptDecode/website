@@ -177,8 +177,11 @@ if "The decoder on this page works" not in index_html:
 # 5. No dead controls and no links to things that do not exist. The Action, the
 #    benchmark repository and the docs subdomain are all planned; linking to
 #    them hands a reader a 404 dressed as a product.
+# `PromptDecode/action` and `PromptDecode/bench` were created on 2026-09-19 and
+# came off this list then; the backlog section links their trackers. The docs
+# subdomain and the old `benchmark` spelling still resolve nowhere.
 for dead in ("docs.promptdeco.de", "github.com/promptdecode/benchmark",
-             "github.com/PromptDecode/benchmark", "github.com/PromptDecode/action"):
+             "github.com/PromptDecode/benchmark"):
     if f'href="https://{dead}' in index_html or f'href="http://{dead}' in index_html:
         fail(f"index.html: links to {dead}, which does not exist yet")
 if re.search(r"<button[^>]*>\s*copy\s*<", index_html, re.I):

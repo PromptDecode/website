@@ -90,6 +90,7 @@
       <a href="#engines">engines</a>
       <a href="#install">install</a>
       <a href="#pricing">pricing</a>
+      <a href="#backlog">backlog</a>
       <a href="https://github.com/PromptDecode">github</a>
       <button class="nav__theme" id="theme-toggle" type="button" aria-label="Switch to the light theme">light</button>
     </div>
@@ -239,6 +240,41 @@
           <li>Billed on committers in a trailing window</li>
         </ul>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="backlog" aria-labelledby="backlog-h">
+  <div class="sec">
+    <div class="sec__head" data-reveal>
+      <p class="eyebrow">06 · Backlog <span class="chip chip--planned">planned</span></p>
+      <h2 id="backlog-h">Everything that is not built, in one list.</h2>
+      <p class="lede">The engines, the CLI, the Action and the benchmark are issues in the open, not a private plan. Each one says what it is and what would make it done. Work happens in the open against these.</p>
+    </div>
+    <div class="backlog" data-reveal>
+      <!-- backlog:start -->
+      <p class="lede">8 open, across four repositories. This list is generated from the trackers, so it is what is actually open rather than what someone remembered to write down.</p>
+      <p class="backlog__repo">engines <span class="backlog__priv">private</span></p>
+      <ul class="backlog__list">
+        <li><span><span class="backlog__no">#1</span>promptdecode-core: classes.json, the decoder, and shared test vectors</span></li>
+        <li><span><span class="backlog__no">#2</span>promptdecode-content: the repository walker, findings, JSON and SARIF</span></li>
+        <li><span><span class="backlog__no">#3</span>promptdecode-cli: scan, with formats, --fail-on and exit codes</span></li>
+        <li><span><span class="backlog__no">#4</span>config engine v0: workflow triggers, sources, and direct run: sinks</span></li>
+        <li><span><span class="backlog__no">#5</span>config engine v1: taint through env, with and outputs, and the write-token sink rule</span></li>
+      </ul>
+      <p class="backlog__repo">action</p>
+      <ul class="backlog__list">
+        <li><a href="https://github.com/PromptDecode/action/issues/1"><span class="backlog__no">#1</span>The GitHub Action: SARIF annotations, with a fork fallback</a></li>
+      </ul>
+      <p class="backlog__repo">benchmark</p>
+      <ul class="backlog__list">
+        <li><a href="https://github.com/PromptDecode/bench/issues/1"><span class="backlog__no">#1</span>The open benchmark: corpus schema, runner, and recall at a stated FPR</a></li>
+      </ul>
+      <p class="backlog__repo">site</p>
+      <ul class="backlog__list">
+        <li><a href="https://github.com/PromptDecode/website/issues/1"><span class="backlog__no">#1</span>check.py: gate the class list against the Rust engine, not just llms.txt</a></li>
+      </ul>
+      <!-- backlog:end -->
     </div>
   </div>
 </section>
