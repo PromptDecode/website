@@ -4,7 +4,7 @@
     python3 tools/check.py            # checks the repository this file is in
     python3 tools/check.py <root>     # checks another checkout (deploy.sh does this)
 
-Three kinds of check.
+The checks:
 
 Structural: in-page anchors resolve, ids are unique, local assets exist,
 JSON-LD parses, and no third-party script sneaks onto the page.
@@ -17,19 +17,64 @@ that does not exist yet, and no em-dashes in the copy.
 And the two promises that are specific to this project, which are worth more
 than the rest put together:
 
-  * The page says nothing you paste leaves your browser. So the script may not
-    contain a network call, and `_headers` must serve `connect-src 'none'`.
+  * The page says nothing you paste leaves your browser. So the page's own
+    script, `assets/promptdecode.js`, may not contain a network call, and
+    `_headers` must serve `connect-src 'none'`. The promise binds the page,
+    not the tooling that keeps the page honest: this script talks to the
+    network itself, in the pinned-release leg below, and that takes nothing
+    away from what the page promises about its own script.
   * The page says the list of Unicode classes IS the claim. So the ranges the
     decoder actually implements must be the ranges named in `llms.txt`. A class
     quietly dropped from the code while the prose still promises it is the one
-    failure this project cannot survive.
+    failure this project cannot survive. The list has one source now,
+    `tools/core/classes.json`, kept under `tools/core/` until
+    promptdecode-core publishes a release to pin (see `tools/core/pin.json`),
+    and three legs hold the promise against the three ways that pipeline can
+    drift:
 
-Exit status is the number of failures (0 = all good).
+      - Regeneration. `tools/generate.py` writes the constants in
+        `assets/promptdecode.js`, the table in README.md and the list in
+        `llms.txt` from `classes.json`; this script regenerates all three in
+        memory and fails on any difference, so a hand edit to a generated
+        region cannot ship. Always runs; needs no network.
+      - The shared vectors. `tools/core/vectors.json` runs against the decoder
+        with `node tools/vectors.mjs`, so the claim is tested against the
+        decoder's behaviour and not only its spelling. Skipped when node is
+        not installed: a contributor without node must not be blocked. But the
+        runner and the vectors are committed files, so either going missing is
+        the repository being broken, not the environment lacking a tool, and
+        that is a failure: a gate that can be deleted while the check stays
+        green is the one failure this project cannot survive.
+      - The pinned release. When `tools/core/pin.json` names a tag, this
+        script fetches that release's `classes.json` and `vectors.json` and
+        fails if the vendored copy has drifted from it. No release exists to
+        pin yet, so the tag is empty and the leg says so and moves on. Every
+        fetch problem (no network, DNS, timeout, a 404 tag, a non-JSON
+        response) is a skip with its reason; only a fetch that succeeds and
+        disagrees with `tools/core/` is a failure. The check must pass with
+        no network at all. The pin file itself is committed, so a pin that
+        names a tag but no repository is a broken file and fails.
+
+The same line runs through every file these legs read. What is committed has
+to be present and parseable: when it is not, that is a failure with the path
+named, never a skip and never a traceback, so the summary line always prints.
+What is absent from the environment (node, the network) is a skip with its
+reason. The first kind of problem is ours to fix; the second belongs to the
+machine the check happens to run on.
+
+A skip prints SKIP, names its reason, and is never counted. Exit status is the
+number of failures (0 = all good).
 """
+import difflib
+import http.client
 import json
 import pathlib
 import re
+import shutil
+import subprocess
 import sys
+import urllib.error
+import urllib.request
 from html.parser import HTMLParser
 
 ROOT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else pathlib.Path(__file__).resolve().parent.parent)
@@ -141,6 +186,154 @@ for cp in sorted(implemented):
 for spelled in sorted(set(re.findall(r"U\+([0-9A-F]{4,5})\b", llms))):
     if int(spelled, 16) not in implemented:
         fail(f"llms.txt: promises {spelled}, which assets/promptdecode.js does not implement")
+
+# -------------------------------------------- one source, three spellings
+# The list has one source now: tools/core/classes.json, kept under
+# tools/core/ until promptdecode-core publishes a release to pin against.
+# tools/generate.py writes the three
+# spellings of the claim from it (the constants in assets/promptdecode.js,
+# the table in README.md, the list in llms.txt), and the three legs below
+# fail on the three ways that pipeline can drift: a generated region edited
+# by hand, a decoder that disagrees with the shared vectors, and a copy in
+# tools/core/ left behind by the release pinned in tools/core/pin.json.
+#
+# generate.py lives next to this script, so sys.path gets that directory and
+# not ROOT's tools/: the import has to survive deploy.sh copying the tree
+# elsewhere and running `python3 $tmp/tree/tools/check.py $tmp/tree`, where
+# the script and the root are the same copied tree. The import is the only
+# thing this check writes to disk, and it should not even do that: a check
+# that litters tools/__pycache__ into whatever checkout ran it is its own
+# house-rule violation.
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+# The import is guarded because tools/generate.py is a committed input, not an
+# optional dependency: missing or broken, it is the repository being broken,
+# and that is a counted failure with the reason, not a traceback that dies
+# before the summary line.
+try:
+    import generate
+except Exception as e:  # a missing file, or one that does not even parse
+    generate = None
+    fail(f"tools/generate.py: cannot be imported: {type(e).__name__}: {e}")
+
+# Leg 1: the generated regions are current. Always runs, needs no network.
+# ClassesError is the generator's own "a human has to fix this" message; any
+# other exception out of it is a bug in the generator, which is still a
+# failure, still counted, and still named rather than a traceback.
+if generate is not None:
+    try:
+        for relpath, current, wanted in generate.targets(ROOT, generate.load_classes(ROOT)):
+            if current == wanted:
+                continue
+            diff = list(difflib.unified_diff(
+                current.splitlines(keepends=True), wanted.splitlines(keepends=True),
+                fromfile=relpath, tofile=relpath + " (generated)"))
+            report = [f"{relpath}: the generated region is not what tools/generate.py "
+                      f"produces from tools/core/classes.json; run python3 tools/generate.py"]
+            report += [line.rstrip("\n") for line in diff[:20]]
+            if len(diff) > 20:
+                report.append(f"(diff capped at 20 lines; {len(diff) - 20} more)")
+            fail("\n".join(report))
+    except generate.ClassesError as e:
+        fail(str(e))
+    except Exception as e:
+        fail(f"tools/generate.py: failed while regenerating: {type(e).__name__}: {e}")
+
+# Leg 2: the shared vectors run against the decoder. The order of the two
+# guards is the policy: tools/vectors.mjs is committed, so its absence is the
+# repository being broken and fails even on a machine that has no node, while
+# node itself is the environment and a contributor without it must not be
+# blocked. A runner that hangs is not a skip either: a vector suite that never
+# finishes says nothing either way, and silence must not be allowed to read as
+# a pass.
+runner = ROOT / "tools" / "vectors.mjs"
+node = shutil.which("node")
+if not runner.exists():
+    fail("tools/vectors.mjs: missing. It is a committed file, so this is the "
+         "repository being broken rather than an environment missing node, and "
+         "the shared vectors in tools/core/vectors.json are going unrun")
+elif node is None:
+    print("SKIP vectors: node is not installed, so the shared vectors in "
+          "tools/core/vectors.json did not run against assets/promptdecode.js")
+else:
+    try:
+        run = subprocess.run([node, str(runner), str(ROOT)],
+                             capture_output=True, text=True, errors="replace",
+                             timeout=60)
+    except subprocess.TimeoutExpired:
+        fail("tools/vectors.mjs: no result within 60s; the shared vectors did not "
+             "finish, which is a failure and not a skip")
+    except OSError as e:
+        fail(f"tools/vectors.mjs: could not be run: {e}")
+    else:
+        if run.returncode != 0:
+            output = (run.stdout + run.stderr).strip() or "(no output)"
+            fail("tools/core/vectors.json: the shared vectors failed against "
+                 "assets/promptdecode.js (node tools/vectors.mjs):\n" + output)
+
+# Leg 3: the vendored copy still matches the pinned release. Every fetch
+# problem is a skip, never a failure: check.py has to pass on a machine with
+# no network, and an unreachable or vanished release must not block a commit
+# that has nothing to do with it. Only a fetch that succeeds and disagrees
+# with tools/core/ means the vendored source of truth has drifted, and that
+# is a failure.
+# The file is read as text first so that a pin.json holding a bare `null`
+# (which parses, to Python None) cannot pass for an absent check: only a file
+# that truly could not be read leaves the leg silent, and that path has
+# already failed above.
+pin, pin_text = None, None
+try:
+    pin_text = (ROOT / "tools" / "core" / "pin.json").read_text(encoding="utf-8")
+except OSError as e:
+    fail(f"tools/core/pin.json: cannot be read: {e}")
+try:
+    if pin_text is not None:
+        pin = json.loads(pin_text)
+except ValueError as e:
+    fail(f"tools/core/pin.json: does not parse: {e}")
+
+if isinstance(pin, dict):
+    repo, tag = pin.get("repo", ""), pin.get("tag", "")
+    if not isinstance(repo, str) or not isinstance(tag, str):
+        fail("tools/core/pin.json: \"repo\" and \"tag\" must be strings")
+    elif not tag:
+        print("SKIP pinned: promptdecode-core has published no release yet, so "
+              "tools/core/ is the source until one exists. Setting tag in "
+              "tools/core/pin.json turns this leg on")
+    elif not repo:
+        # A tag with nowhere to fetch it from is not a fetch problem, it is a
+        # broken pin, and skips must stay reserved for the world being
+        # unreachable rather than for files we ship being wrong.
+        fail("tools/core/pin.json: names a tag but \"repo\" is empty; the leg "
+             "has no release to compare tools/core/ against")
+    else:
+        for name in ("classes.json", "vectors.json"):
+            url = f"https://raw.githubusercontent.com/{repo}/{tag}/{name}"
+            try:
+                with urllib.request.urlopen(url, timeout=10) as resp:
+                    upstream = json.loads(resp.read().decode("utf-8"))
+            except (urllib.error.URLError, http.client.HTTPException,
+                    OSError, ValueError) as e:
+                # HTTPException covers a response that dies mid-read, which is
+                # a fetch problem like any other, not a crash.
+                print(f"SKIP pinned: could not fetch {url} ({e}); the vendored "
+                      f"tools/core/{name} was not compared")
+                continue
+            try:
+                vendored = json.loads(
+                    (ROOT / "tools" / "core" / name).read_text(encoding="utf-8"))
+            except OSError as e:
+                fail(f"tools/core/{name}: cannot be read: {e}")
+                continue
+            except ValueError as e:
+                fail(f"tools/core/{name}: does not parse: {e}")
+                continue
+            if upstream != vendored:
+                fail(f"tools/core/{name}: drifted from the pinned release {repo}@{tag}. "
+                     "Update tools/core/ from that release and run python3 tools/generate.py")
+elif pin_text is not None:
+    # Covers both a JSON null and any other non-object the file could hold.
+    fail("tools/core/pin.json: expected an object with \"repo\" and \"tag\"")
 
 # ------------------------------------------------------------------ house rules
 

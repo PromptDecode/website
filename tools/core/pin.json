@@ -1,0 +1,5 @@
+{
+  "repo": "PromptDecode/promptdecode-core",
+  "tag": "",
+  "why": "The files in this directory are the single source of truth for what the decoder detects, and the copy promptdecode-core is expected to publish. When tag names a release they are its vendored copy: setting tag turns on the check that fetches classes.json and vectors.json from that release and fails if this directory has drifted from it; while tag is empty the check says so and moves on. promptdecode-core has no release to pin yet."
+}

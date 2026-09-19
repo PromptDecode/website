@@ -34,6 +34,7 @@ something that exists.
   payload they encode. It runs in the browser: no upload, no storage, no
   logging, no account. The Content-Security-Policy served with the page sets
   `connect-src 'none'`, so the page cannot make a network request at all.
+<!-- @generated classes -->
 - The three classes it reads, which are the whole of its claim:
   - Unicode tag block, U+E0000 to U+E007F. These mirror printable ASCII at an
     offset of 0xE0000, so a run of them is recoverable as plain text.
@@ -42,6 +43,7 @@ something that exists.
     U+200F, U+202A, U+202B, U+202C, U+202D, U+202E, U+2066, U+2067, U+2068,
     U+2069.
   - Variation selectors: U+FE00 to U+FE0F, and U+E0100 to U+E01EF.
+<!-- @generated end -->
 - The site itself. Static HTML, one stylesheet, one script, no build step, no
   runtime dependency, served by Cloudflare Pages.
 
