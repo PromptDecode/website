@@ -232,6 +232,17 @@
     sync();
   }
 
+  /* A run marker. The brackets are text, not decoration: they survive a
+     plain-text copy, a greyscale screenshot and forced-colours mode, where
+     the tint flattens away. U+27EA/U+27EB are outside ASCII, so a
+     decoded payload and a U+XXXX hex label can never contain them. */
+  function marker(bracket) {
+    var span = document.createElement("span");
+    span.className = "tokmark";
+    span.textContent = bracket;
+    return span;
+  }
+
   function render(result) {
     tokensEl.textContent = "";
     var k = 0;
@@ -243,13 +254,25 @@
         tokensEl.appendChild(document.createTextNode(seg.parts.join("")));
         return;
       }
+      // Bracket the run with real characters: the marking has to survive a
+      // plain-text copy, a greyscale screenshot and forced-colours mode,
+      // and the tint survives none of those.
+      var run = document.createElement("span");
+      var readable = seg.parts.every(function (p) { return p.indexOf("U+") !== 0; });
+      run.setAttribute("role", "img");
+      run.setAttribute("aria-label", readable
+        ? "hidden text: " + seg.parts.join("")
+        : "hidden characters: " + seg.parts.join(" "));
+      run.appendChild(marker("⟪"));
       seg.parts.forEach(function (label) {
         var span = document.createElement("span");
         span.className = label.indexOf("U+") === 0 ? "tok tok--hex" : "tok";
         span.textContent = label;
         span.style.transitionDelay = (k++ * 14) + "ms";
-        tokensEl.appendChild(span);
+        run.appendChild(span);
       });
+      run.appendChild(marker("⟫"));
+      tokensEl.appendChild(run);
     });
 
     var c = result.counts;

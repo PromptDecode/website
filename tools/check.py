@@ -418,6 +418,19 @@ else:
 if "PLANNED" not in llms or "## Shipping today" not in llms:
     fail("llms.txt: lost the built/unbuilt split")
 
+# 9. A copied revealed pane still marks what was hidden. The reveal is a
+#    page promise, so the script that ships it holds it: every hidden run
+#    must be bracketed with the U+27EA/U+27EB characters, and the run must
+#    be marked for assistive technology so it is announced as hidden rather
+#    than read as prose.
+if "⟪" not in js or "⟫" not in js:
+    fail("assets/promptdecode.js: hidden runs would lose the distinction in a plain-text copy; the U+27EA/U+27EB markers are missing")
+if not (re.search(r'setAttribute\(\s*"role",\s*"img"\)', js) and re.search(r'setAttribute\(\s*"aria-label"', js)):
+    fail("assets/promptdecode.js: hidden runs are not marked for assistive technology; the role=img aria-label is missing")
+copy_md = (ROOT / "COPY.md").read_text(encoding="utf-8")
+if "⟪" not in copy_md or "⟫" not in copy_md:
+    fail("COPY.md: does not record the ⟪ ⟫ markers that keep a copied reveal readable")
+
 for f in failures:
     print("FAIL", f)
 print(f"{len(failures)} failure(s)" if failures else "check: ok")

@@ -13,6 +13,7 @@ tense on the page.
 | Nothing you paste is uploaded, stored or logged | decoder note, footer, `llms.txt` | The script contains no network call and `_headers` serves `connect-src 'none'`. `tools/check.py` fails on either changing |
 | The three classes it reads | decoder note, `llms.txt` | The single source `tools/core/classes.json`, from which `tools/generate.py` writes the code, the README table and `llms.txt`. `tools/check.py` fails on any difference and runs the shared vectors in `tools/core/vectors.json` against the decoder |
 | Tag-block characters mirror printable ASCII at U+E0000 | `01 · Decode` | Unicode 16.0, Tags block. Demonstrable in the decoder itself |
+| A copied revealed pane still shows which characters were hidden | `01 · Decode` | The renderer brackets every hidden run with ⟪ ⟫ (U+27EA/U+27EB) and marks the run for assistive technology. The double angle brackets cannot appear in a decoded payload, which is ASCII, or in a U+XXXX hex label. `tools/check.py` fails if the brackets or the marking are dropped |
 | Nothing else is built | banner, every `planned` chip, `llms.txt` | `github.com/PromptDecode` held no repository other than this site when the page was written |
 | No cookies, no analytics | footer | `index.html` loads `promptdecode.js` and Google Fonts, nothing else. `tools/check.py` fails on any other third-party script |
 | A Factory Zero venture | footer, JSON-LD, `llms.txt` | Pending: the Factory Zero registry entry has not been added yet (`Factory-Zero/website`, `assets/fz-data.js`) |
