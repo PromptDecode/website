@@ -21,11 +21,11 @@ tense on the page.
 
 Source for every plan: the Claude Design canvas `promptdecode.dc.html` (project
 `5b6b2917-7759-4ee9-883a-af2275c16303`). They are product intentions, not
-specifications, and no code exists for any of them.
+specifications, and no code exists for the rest. The `config` engine and the
+`promptdecode scan` CLI are built (source at
+`PromptDecode/promptdecode`, no release yet) and carry the `shipping` chip.
 
-- A `config` engine: static taint analysis of GitHub Actions workflows.
 - A `content` engine: the decoder's rules across a whole repository.
-- A command-line scanner, `promptdecode scan`.
 - A GitHub Action, `promptdecode/action@v1`, posting check annotations.
 - An open benchmark: a named corpus and harness.
 - Pricing: free for public repositories, paid per developer for private ones.

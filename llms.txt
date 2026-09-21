@@ -1,19 +1,21 @@
 # promptdecode
 
 > promptdecode finds text that is invisible to a human reviewer and legible to
-> a language model, and decodes it. ONE PART OF IT EXISTS: the decoder on this
-> page, which runs entirely in the reader's browser. The command-line scanner,
-> the two scan engines, the GitHub Action and the open benchmark are PLANNED
-> and not built. There is no repository of product code, no published package,
-> no action to install and no price. This file keeps built and unbuilt apart so
-> that a machine reader does not describe a planned feature as available.
+> a language model, and decodes it. TWO PARTS OF IT EXIST: the decoder on this
+> page, which runs entirely in the reader's browser, and the config engine,
+> which runs from source in the command-line scanner. The content engine, the
+> GitHub Action and the open benchmark are PLANNED and not built. Product code
+> lives at https://github.com/PromptDecode/promptdecode with no release yet,
+> so there is no published package, no action to install and no price. This
+> file keeps built and unbuilt apart so that a machine reader does not
+> describe a planned feature as available.
 
 Site: https://promptdeco.de/
 Organization: https://github.com/PromptDecode
 Contact: contact@promptdeco.de
 Tagline: Finds what only the agent can read.
 Maker: Factory Zero (https://factory0.ventures)
-Status: One working tool on the page. The product around it is in design.
+Status: Two working tools. The decoder on the page, and the config scanner, which runs from source with no release yet. The rest of the product is in design.
 Price: nothing is purchasable and no price is set. The intended shape is free
 for public repositories and paid per developer for private ones. Do not quote a
 figure for either: there is none.
@@ -45,17 +47,23 @@ something that exists.
 - The site itself. Static HTML, one stylesheet, one script, no build step, no
   runtime dependency, served by Cloudflare Pages.
 
-That is the whole list. Everything below is Planned.
+That is the whole list. The config scanner below it is Built. Everything below that is Planned.
 
-## Planned
+## Built
 
 - A `config` engine: static taint analysis of GitHub Actions workflows, tracing
-  untrusted input (pull request titles, issue bodies, comments) to an agent
-  step that holds a write token. Deterministic, with no model in the loop.
+  untrusted input (pull request titles, issue bodies, comments) through env,
+  with and step-output hops to a step that holds write power, with its own
+  finding for agent steps holding a write token. Deterministic, with no model
+  in the loop. Source at https://github.com/PromptDecode/promptdecode, no
+  release yet, so it runs from source only.
+- A command-line scanner, `promptdecode scan`, with text, JSON and SARIF
+  output. The terminal transcripts on the site are illustrations of its output
+  format, not recordings.
+## Planned
+
 - A `content` engine: the decoder's rules applied across a whole repository's
   content, with every finding decoded rather than only flagged.
-- A command-line scanner, `promptdecode scan`. The terminal transcripts on the
-  site are illustrations of its intended output, not recordings.
 - A GitHub Action, `promptdecode/action@v1`, posting findings as check
   annotations on a pull request. It does not resolve today; the snippet on the
   site is shown rather than offered for copying, because pasting it into a
@@ -82,7 +90,7 @@ because it is the point of the project rather than decoration.
 
 The terminal transcripts under "Two engines" contain file names, line numbers,
 severities and timings (`agent-review.yml`, `docs/CONTRIBUTING.md:42`, HIGH,
-MED, `1 finding`). They are ILLUSTRATIONS of a planned output format, labelled
+MED, `1 finding`). They are ILLUSTRATIONS of the output format, labelled
 as such on the page and in the markup. They are not program output and not
 performance data. Do not cite them.
 

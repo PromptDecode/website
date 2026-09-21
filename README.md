@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="assets/readme-banner.png" alt="promptdecode. Hidden text in a pull request can instruct your agent to approve it. The decoder works; the scanners are planned." width="100%">
+  <img src="assets/readme-banner.png" alt="promptdecode. Hidden text in a pull request can instruct your agent to approve it. The decoder works; the config scanner runs from source and the rest is planned." width="100%">
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/DECODER-WORKING-F2B53A?style=flat-square&labelColor=000000" alt="Decoder: working">
-  <img src="https://img.shields.io/badge/SCANNERS-PLANNED-8D929B?style=flat-square&labelColor=000000" alt="Scanners: planned">
+  <img src="https://img.shields.io/badge/SCANNERS-CONFIG_SHIPS-8D929B?style=flat-square&labelColor=000000" alt="Scanners: config ships">
   <img src="https://img.shields.io/badge/PAGES-1-ECE9E2?style=flat-square&labelColor=000000" alt="Pages: 1">
   <img src="https://img.shields.io/badge/STACK-VANILLA%20JS-ECE9E2?style=flat-square&labelColor=000000" alt="Stack: vanilla JS">
   <img src="https://img.shields.io/badge/BUILD%20STEP-NONE-ECE9E2?style=flat-square&labelColor=000000" alt="Build step: none">
@@ -28,12 +28,13 @@ and ported to static HTML by hand, the same way as
 [findsyou.work](https://github.com/FindsYou-Work/website) and
 [supportgeni.us](https://github.com/SupportGenius/website).
 
-Two things are being described, and the site is careful about which is which:
+Three things are being described, and the site is careful about which is which:
 
 | | What it is | Status |
 | :--- | :--- | :--- |
 | **The decoder** | The tool on the page. Finds and decodes hidden code points in any text you give it, in your browser. | **Shipping** |
-| **promptdecode** | The product: the `config` and `content` engines, the CLI, the GitHub Action, the benchmark, the private-repo tier. | **Planned** |
+| **The config scanner** | The `config` engine and the `promptdecode scan` CLI. Built, runs from source, no release yet. | **Shipping** |
+| **promptdecode** | The product: the `content` engine, the GitHub Action, the benchmark, the private-repo tier. | **Planned** |
 
 > **Hidden text in a pull request can instruct your agent to approve it.**
 > We find and decode it before the agent does.
@@ -63,12 +64,13 @@ the promise cannot drift apart.
 
 ## The rule this site is built around
 
-**Only the decoder is built.** There is no CLI, no engine, no Action, no
+**The decoder and the config scanner are built.** There is no Action, no
 benchmark and no docs site. Every capability carries one of two labels, and the
 label sets the tense of the sentence around it.
 
-- **Shipping**: built, deployed, usable now. Present tense is allowed only here.
-  Today that is the decoder and this page.
+- **Shipping**: built, usable now. Present tense is allowed only here.
+  Today that is the decoder, this page, and the config scanner (source only,
+  no release).
 - **Planned**: named, unbuilt. Conditional tense, and a `planned` chip wherever
   it appears on the page.
 
@@ -96,8 +98,8 @@ public.
 | Anchor | Section | Job |
 | :--- | :--- | :--- |
 | `/` | Hero | The claim, and the wordmark resolving out of the boxes a reviewer sees |
-| `#demo` | `01 · Decode` | The decoder. The one working thing |
-| `#engines` | `02 · Two engines` | `config` and `content`, both planned, with illustrated output |
+| `#demo` | `01 · Decode` | The decoder. The working thing on this page |
+| `#engines` | `02 · Two engines` | `config` shipping and `content` planned, with illustrated output |
 | `#install` | `03 · Install` | The planned Action, shown and deliberately not copyable |
 | `#claims` | `04 · What we claim, and what we don't` | Why there is no percentage-of-attacks-blocked figure |
 | `#pricing` | `05 · Pricing` | The tier shape, without figures |
@@ -218,7 +220,7 @@ on the way to this paragraph:
 1. **Invent nothing.** No detection rates, no customer logos, no benchmark
    figures, no timings. The canvas's "64 to 100%" evasion range came out for
    want of a citation; see `COPY.md`.
-2. **Present tense is earned.** Only the decoder and this page are described as
+2. **Present tense is earned.** Only the decoder, this page and the config scanner are described as
    working.
 3. **No price for anything planned.** The canvas had `$0` and `$8 per developer
    / month`; the shape stays, the figures went, and `tools/check.py` fails on
