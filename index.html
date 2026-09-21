@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>promptdecode · finds what only the agent can read</title>
-<meta name="description" content="Hidden text in a pull request can instruct your coding agent to approve it. promptdecode finds and decodes it. The decoder on this page works in your browser; the CLI, the two scan engines and the GitHub Action are planned and not built yet.">
+<meta name="description" content="Hidden text in a pull request can instruct your coding agent to approve it. promptdecode finds and decodes it. The decoder on this page works in your browser. The config engine runs from source in the CLI; the content engine and the GitHub Action are planned.">
 <link rel="canonical" href="https://promptdeco.de/">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark light">
@@ -14,15 +14,15 @@
 <meta property="og:site_name" content="promptdecode">
 <meta property="og:url" content="https://promptdeco.de/">
 <meta property="og:title" content="promptdecode · finds what only the agent can read">
-<meta property="og:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does. The decoder on this page works; everything else is planned.">
+<meta property="og:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does. The browser decoder and the config scanner work; the content engine and the Action are planned.">
 <meta property="og:image" content="https://promptdeco.de/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
-<meta property="og:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the scanners are planned.">
+<meta property="og:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the config scanner runs from source and the rest is planned.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://promptdeco.de/assets/og.png">
-<meta name="twitter:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the scanners are planned.">
+<meta name="twitter:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the config scanner runs from source and the rest is planned.">
 <meta name="twitter:title" content="promptdecode · finds what only the agent can read">
 <meta name="twitter:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does.">
 
@@ -65,7 +65,7 @@
       "operatingSystem": "Web",
       "url": "https://promptdeco.de/",
       "publisher": { "@id": "https://promptdeco.de/#organization" },
-      "releaseNotes": "The decoder on this page is usable now and runs entirely in the browser. The command-line scanner, the config and content engines, the GitHub Action and the benchmark are planned, not built, and no price is set."
+      "releaseNotes": "The decoder on this page is usable now and runs entirely in the browser. The command-line scanner with the config engine runs from source. The content engine, the GitHub Action and the benchmark are planned, not built, and no price is set."
     },
     {
       "@type": "WebPage",
@@ -98,7 +98,7 @@
 
 <p class="banner" id="banner">
   <span class="banner__dot" aria-hidden="true"></span>
-  The decoder on this page works and runs in your browser. The scanners, the Action and the benchmark are planned and not built yet.
+  The decoder on this page works and runs in your browser. The config scanner runs from source. The content engine, the Action and the benchmark are planned and not built yet.
 </p>
 
 <main id="main">
@@ -110,7 +110,7 @@
   <p class="hero__lede" data-reveal>Hidden text in a pull request can instruct your agent to approve it. We find and decode it before the agent does.</p>
   <div class="hero__cta" data-reveal>
     <a class="btn btn--accent" href="#demo">Decode something</a>
-    <a class="btn btn--ghost" href="#engines">or see what is planned ↓</a>
+    <a class="btn btn--ghost" href="#engines">or see the engines ↓</a>
   </div>
 </section>
 
@@ -144,16 +144,16 @@
 <section class="band" id="engines" aria-labelledby="engines-h">
   <div class="sec">
     <div class="sec__head" data-reveal>
-      <p class="eyebrow">02 · Two engines <span class="chip chip--planned">planned</span></p>
-      <h2 id="engines-h">One would read the workflow. One would read the repo.</h2>
-      <p class="lede">Neither engine is built. The transcripts below are illustrations of the output being designed, not recordings of a program that runs.</p>
+      <p class="eyebrow">02 · Two engines</p>
+      <h2 id="engines-h">One reads the workflow. One will read the repo.</h2>
+      <p class="lede">The config engine is built and runs from source. The content engine is not. Both transcripts below are illustrations of the output format, not recordings.</p>
     </div>
 
     <div class="engines">
       <article class="engine" data-reveal>
-        <h3 class="engine__name">config <span class="chip chip--planned">planned</span></h3>
-        <p class="engine__body">Static taint analysis of GitHub Actions. Untrusted input, such as pull request titles, issue bodies and comments, traced to an agent step that holds a write token. Deterministic, with no model in the loop.</p>
-        <pre class="term" aria-label="Illustration of planned config engine output"><span class="term__dim">$</span> promptdecode scan --engine config .github/workflows/
+        <h3 class="engine__name">config <span class="chip chip--shipping">shipping</span></h3>
+        <p class="engine__body">Static taint analysis of GitHub Actions. Untrusted input, such as pull request titles, issue bodies and comments, traced to an agent step that holds a write token. Deterministic, with no model in the loop. Runs from source today; no release yet. Source: <a href="https://github.com/PromptDecode/promptdecode">PromptDecode/promptdecode</a>.</p>
+        <pre class="term" aria-label="Illustration of config engine output"><span class="term__dim">$</span> promptdecode scan --engine config .github/workflows/
 
 <span class="term__dim">.github/workflows/agent-review.yml</span>
   <span class="term__hit">HIGH</span>  untrusted input reaches agent with write token
