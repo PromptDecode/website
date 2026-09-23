@@ -1,10 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="promptdecode">
-  <!-- The promptdecode mark: three character slots on an amber tile. The first
-       has resolved into a solid glyph; the other two are still the empty boxes
-       the page's wordmark starts in. Left to right, a decode in progress.
-       The animated version of the same idea is the hero (.wm in the CSS). -->
+  <!-- The promptdecode mark: three character slots on an amber tile, all
+       decoded into solid glyphs. The page's wordmark still starts as empty
+       boxes and resolves (.wm in the CSS); the mark shows the finished decode. -->
   <rect width="32" height="32" rx="9" fill="#f2b53a"/>
   <rect x="5" y="9" width="6" height="14" rx="1.5" fill="#14161a"/>
-  <rect x="14" y="10" width="5" height="12" rx="1.5" fill="none" stroke="#14161a" stroke-width="2" stroke-opacity=".55"/>
-  <rect x="22" y="10" width="5" height="12" rx="1.5" fill="none" stroke="#14161a" stroke-width="2" stroke-opacity=".55"/>
+  <rect x="13" y="9" width="6" height="14" rx="1.5" fill="#14161a"/>
+  <rect x="21" y="9" width="6" height="14" rx="1.5" fill="#14161a"/>
 </svg>
