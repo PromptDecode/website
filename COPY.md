@@ -67,3 +67,9 @@ three and fails on any difference, in either direction, then runs the shared
 vectors in `tools/core/vectors.json` against the decoder. Adding a class means
 editing `tools/core/classes.json` and running `python3 tools/generate.py`, in
 one diff.
+
+## Sister ventures
+
+| Claim | Where | Source |
+| :--- | :--- | :--- |
+| Planned in Living Brain: the content engine screens everything the brain reads and serves to coding agents | Engines section, llms.txt | Livingbrain-wiki/livingbrain#50 (2026-10-03). Planned, conditional wording |

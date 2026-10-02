@@ -66,6 +66,9 @@ That is the whole list. The config scanner below it is Built. Everything below t
 
 - A `content` engine: the decoder's rules applied across a whole repository's
   content, with every finding decoded rather than only flagged.
+- In Living Brain (https://livingbrain.wiki, a sister Factory Zero venture): the
+  content engine screening everything the brain reads and everything it serves
+  to coding agents.
 - A GitHub Action, `promptdecode/action@v1`, posting findings as check
   annotations on a pull request. It does not resolve today; the snippet on the
   site is shown rather than offered for copying, because pasting it into a
