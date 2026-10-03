@@ -16,7 +16,8 @@ tense on the page.
 | A copied revealed pane still shows which characters were hidden | `01 · Decode` | The renderer brackets every hidden run with ⟪ ⟫ (U+27EA/U+27EB) and marks the run for assistive technology. The double angle brackets cannot appear in a decoded payload, which is ASCII, or in a U+XXXX hex label. `tools/check.py` fails if the brackets or the marking are dropped |
 | Nothing else is built | banner, every `planned` chip, `llms.txt` | `github.com/PromptDecode` held no repository other than this site when the page was written |
 | No cookies, no analytics | footer | `index.html` loads `promptdecode.js` and Google Fonts, nothing else. `tools/check.py` fails on any other third-party script |
-| A Factory Zero venture | footer, JSON-LD, `llms.txt` | Pending: the Factory Zero registry entry has not been added yet (`Factory-Zero/website`, `assets/fz-data.js`) |
+| A Factory Zero venture | footer, JSON-LD, `llms.txt` | Factory Zero registry record FZ-009 (`Factory-Zero/website`, `assets/fz-data.js`) |
+| "Built with" strip: Polar for payments and Keep Shipping for deploys, both **planned**; hosted on Cloudflare (the site, live) | footer of `index.html` and `404.html`, `llms.txt` | Factory Zero registry: the `uses` of FZ-009 in `Factory-Zero/website` `assets/fz-data.js`, published as https://factory0.ventures/stack.json and vendored in `tools/built-with.json`. Regenerate with `python3 tools/built-with.py --pull`; `tools/check.py` fails if the strip drifts from the vendored copy. Never edit the strip by hand |
 
 ## Plans (each carries a `planned` chip, or sits in a section that does)
 

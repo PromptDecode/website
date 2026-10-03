@@ -431,6 +431,13 @@ copy_md = (ROOT / "COPY.md").read_text(encoding="utf-8")
 if "⟪" not in copy_md or "⟫" not in copy_md:
     fail("COPY.md: does not record the ⟪ ⟫ markers that keep a copied reveal readable")
 
+# 9. The "Built with" strip is generated from tools/built-with.json, a vendored copy of
+#    this venture's entry in the Factory Zero registry (stack.json).
+import subprocess
+bw = subprocess.run([sys.executable, str(ROOT / "tools" / "built-with.py"), "--check"], capture_output=True, text=True)
+if bw.returncode:
+    fail("built-with: " + (bw.stderr or bw.stdout).strip())
+
 for f in failures:
     print("FAIL", f)
 print(f"{len(failures)} failure(s)" if failures else "check: ok")
