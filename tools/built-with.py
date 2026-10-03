@@ -14,13 +14,28 @@ runtime: the strip is static HTML between marker comments.
 
 Regions (anywhere in any .html file outside dist/ and tools/):
   <!-- built-with:start --> ... <!-- built-with:end -->
-      the footer strip: one line, every entry, planned ones marked "(planned)"
+      the footer strip: a list of chips, live entries first, then planned
+      ones (tagged "planned"), then "Listed by Factory Zero" last
   <!-- subprocessors:start --> ... <!-- subprocessors:end -->
       the privacy page list: third parties that are live, then planned ones,
       labelled as planned
 
 The markup uses the class names in CLASSES below; style them in the site's
-own CSS. Edit the data in the registry, never here or in built-with.json by
+own CSS. The strip is
+
+  <ul class="built-with" aria-label="Built with">
+    <li class="bw"><span class="bw__role">Hosted on</span>
+        <a class="bw__name" href="...">Cloudflare</a></li>
+    <li class="bw bw--planned"><span class="bw__role">Payments by</span>
+        <a class="bw__name" href="...">Polar</a> <span class="bw__tag"><span
+        class="bw__paren">(</span>planned<span class="bw__paren">)</span></span></li>
+    <li class="bw bw--source"><span class="bw__role">Listed by</span>
+        <a class="bw__name" href="...">Factory Zero</a></li>
+  </ul>
+
+(one line per chip in the output). Without CSS it reads as a plain list,
+"Payments by Polar (planned)"; sites hide .bw__paren and draw .bw__tag as a
+small label. Edit the data in the registry, never here or in built-with.json by
 hand: a change belongs in fz-data.js first, then `--pull`.
 """
 import html
@@ -37,7 +52,13 @@ SKIP_DIRS = {"dist", "tools", "node_modules", ".git", ".wrangler", "design-src"}
 
 CLASSES = {
     "strip": "built-with",
-    "planned": "built-with__planned",
+    "chip": "bw",
+    "role": "bw__role",
+    "name": "bw__name",
+    "tag": "bw__tag",
+    "paren": "bw__paren",
+    "planned": "bw--planned",
+    "source": "bw--source",
     "subs": "subprocessors",
 }
 
@@ -51,14 +72,25 @@ def esc(s):
 
 
 def strip_html(entry):
-    parts = []
-    for u in entry["uses"]:
-        name = f'<a href="{esc(u["url"])}">{esc(u["name"])}</a>'
-        planned = f' <span class="{CLASSES["planned"]}">(planned)</span>' if u["status"] == "planned" else ""
-        parts.append(f'{esc(u["phrase"])} {name}{planned}')
-    source = f'<a href="{esc(entry["page"])}">Factory Zero</a>'
-    body = " &middot; ".join(parts)
-    return f'<p class="{CLASSES["strip"]}">{body} &middot; Listed by {source}</p>'
+    c = CLASSES
+
+    def chip(phrase, name, url, mods=(), tag=None):
+        cls = " ".join([c["chip"]] + [c[m] for m in mods])
+        tail = ""
+        if tag:
+            paren = f'<span class="{c["paren"]}">'
+            tail = f' <span class="{c["tag"]}">{paren}(</span>{esc(tag)}{paren})</span></span>'
+        return (f'  <li class="{cls}"><span class="{c["role"]}">{esc(phrase)}</span> '
+                f'<a class="{c["name"]}" href="{esc(url)}">{esc(name)}</a>{tail}</li>')
+
+    live = [u for u in entry["uses"] if u["status"] == "live"]
+    planned = [u for u in entry["uses"] if u["status"] == "planned"]
+    out = [f'<ul class="{c["strip"]}" aria-label="Built with">']
+    out += [chip(u["phrase"], u["name"], u["url"]) for u in live]
+    out += [chip(u["phrase"], u["name"], u["url"], ("planned",), "planned") for u in planned]
+    out.append(chip("Listed by", "Factory Zero", entry["page"], ("source",)))
+    out.append("</ul>")
+    return "\n".join(out)
 
 
 def subprocessors_html(entry):
