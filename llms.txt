@@ -112,6 +112,15 @@ own script. It is not taken from a real repository or a real incident.
   colonizer.dev, findsyou.work and supportgeni.us.
 - The decoder is about eighty lines of that script. There is no backend.
 
+## Built with
+
+From the Factory Zero registry (https://factory0.ventures/stack.json), shown
+in the site footer.
+
+- Hosting: Cloudflare (live: this site).
+- Payments: Polar as Merchant of Record, for the paid tiers (planned; nothing is on sale).
+- Deploys: Keep Shipping (planned).
+
 ## Links
 
 - Source: https://github.com/PromptDecode
