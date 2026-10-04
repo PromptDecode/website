@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/readme-banner.png" alt="promptdecode. Hidden text in a pull request can instruct your agent to approve it. The decoder works; the config scanner runs from source and the rest is planned." width="100%">
+  <img src="assets/readme-banner.png" alt="promptdecode. Hidden text in a pull request can instruct your agent to approve it. The decoder works; the config scanner runs from source." width="100%">
 </p>
 
 <p align="center">
@@ -28,13 +28,15 @@ and ported to static HTML by hand, the same way as
 [findsyou.work](https://github.com/FindsYou-Work/website) and
 [supportgeni.us](https://github.com/SupportGenius/website).
 
-Three things are being described, and the site is careful about which is which:
+What the site describes, and which is which:
 
 | | What it is | Status |
 | :--- | :--- | :--- |
 | **The decoder** | The tool on the page. Finds and decodes hidden code points in any text you give it, in your browser. | **Shipping** |
-| **The config scanner** | The `config` engine and the `promptdecode scan` CLI. Built, runs from source, no release yet. | **Shipping** |
-| **promptdecode** | The product: the `content` engine, the GitHub Action, the benchmark, the private-repo tier. | **Planned** |
+| **The config scanner** | The `config` and `content` engines and the `promptdecode scan` CLI. Built, runs from source, no release yet. | **Shipping** |
+| **The GitHub Action** | `promptdecode/action@v1`, posting findings as check annotations. Merged 2026-09-22, no tag: `@v1` does not resolve, waiting on the first scanner release. | **Written, unreleased** |
+| **The benchmark** | `PromptDecode/bench`, corpus `promptdecode-bench`, open results. | **Open** |
+| **The private-repo tier** | Paid per developer, with no price set. | **Planned** |
 
 > **Hidden text in a pull request can instruct your agent to approve it.**
 > We find and decode it before the agent does.
@@ -77,19 +79,22 @@ disagrees is a failure.
 
 ## The rule this site is built around
 
-**The decoder and the config scanner are built.** There is no Action, no
-benchmark and no docs site. Every capability carries one of two labels, and the
-label sets the tense of the sentence around it.
+**The decoder and the engines are built, the Action is written and the
+benchmark is open.** There is no docs site. Every capability carries a status
+label, and the label sets the tense of the sentence around it.
 
 - **Shipping**: built, usable now. Present tense is allowed only here.
-  Today that is the decoder, this page, and the config scanner (source only,
-  no release).
+  Today that is the decoder, this page, and the config and content engines
+  (source only, no release).
+- **Written, unreleased**: the GitHub Action. It is merged but not tagged, so
+  `@v1` does not resolve until the first scanner release ships.
 - **Planned**: named, unbuilt. Conditional tense, and a `planned` chip wherever
-  it appears on the page.
+  it appears on the page. Today that is the private-repo tier, and Living
+  Brain's use of the content engine.
 
 A banner at the top says so in the first sentence a visitor reads, and
 [`llms.txt`](llms.txt) repeats it for machine readers, so an answer engine
-cannot describe a planned engine as available.
+cannot describe a planned capability as available.
 
 ## Nothing you paste leaves your browser
 
@@ -112,8 +117,8 @@ public.
 | :--- | :--- | :--- |
 | `/` | Hero | The claim, and the wordmark resolving out of the boxes a reviewer sees |
 | `#demo` | `01 · Decode` | The decoder. The working thing on this page |
-| `#engines` | `02 · Two engines` | `config` shipping and `content` planned, with illustrated output |
-| `#install` | `03 · Install` | The planned Action, shown and deliberately not copyable |
+| `#engines` | `02 · Two engines` | `config` and `content` shipping, with illustrated output |
+| `#install` | `03 · Install` | The written but unreleased Action, shown and deliberately not copyable |
 | `#claims` | `04 · What we claim, and what we don't` | Why there is no percentage-of-attacks-blocked figure |
 | `#pricing` | `05 · Pricing` | The tier shape, without figures |
 
@@ -246,14 +251,16 @@ on the way to this paragraph:
 1. **Invent nothing.** No detection rates, no customer logos, no benchmark
    figures, no timings. The canvas's "64 to 100%" evasion range came out for
    want of a citation; see `COPY.md`.
-2. **Present tense is earned.** Only the decoder, this page and the config scanner are described as
-   working.
+2. **Present tense is earned.** Only the decoder, this page and the config and
+   content engines are described as working, and the engines are qualified with
+   "runs from source, no release yet".
 3. **No price for anything planned.** The canvas had `$0` and `$8 per developer
    / month`; the shape stays, the figures went, and `tools/check.py` fails on
    anything that looks like a price.
-4. **No dead controls and no dead links.** The Action does not exist, so its
-   snippet is shown rather than made copyable. `docs.promptdeco.de` and
-   `promptdecode/benchmark` are not linked until they resolve.
+4. **No dead controls and no dead links.** `promptdecode/action@v1` does not
+   resolve yet, so its snippet is shown rather than made copyable.
+   `docs.promptdeco.de` and `promptdecode/benchmark` are not linked until they
+   resolve.
 5. **The transcripts say they are illustrations.** Keep the lede that says so.
 6. **The decoder stays offline.** See "Nothing you paste leaves your browser".
 7. **The list is the claim.** Changing what the decoder detects means editing

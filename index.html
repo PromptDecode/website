@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>promptdecode · finds what only the agent can read</title>
-<meta name="description" content="Hidden text in a pull request can instruct your coding agent to approve it. promptdecode finds and decodes it. The decoder on this page works in your browser. The config engine runs from source in the CLI; the content engine and the GitHub Action are planned.">
+<meta name="description" content="Hidden text in a pull request can instruct your coding agent to approve it. promptdecode finds and decodes it. The decoder on this page works in your browser. The config and content engines run from source in the CLI, with no release yet; the GitHub Action is written and waits on the first scanner release.">
 <link rel="canonical" href="https://promptdeco.de/">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark light">
@@ -14,17 +14,17 @@
 <meta property="og:site_name" content="promptdecode">
 <meta property="og:url" content="https://promptdeco.de/">
 <meta property="og:title" content="promptdecode · finds what only the agent can read">
-<meta property="og:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does. The browser decoder and the config scanner work; the content engine and the Action are planned.">
+<meta property="og:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does. The browser decoder works and the config and content engines run from source, with no release yet; the Action is written and waits on the first scanner release.">
 <meta property="og:image" content="https://promptdeco.de/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
-<meta property="og:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the config scanner runs from source and the rest is planned.">
+<meta property="og:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the config scanner runs from source.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://promptdeco.de/assets/og.png">
-<meta name="twitter:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the config scanner runs from source and the rest is planned.">
+<meta name="twitter:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the config scanner runs from source.">
 <meta name="twitter:title" content="promptdecode · finds what only the agent can read">
-<meta name="twitter:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does.">
+<meta name="twitter:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does. The browser decoder works and the config and content engines run from source, with no release yet; the Action is written and waits on the first scanner release.">
 
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -65,7 +65,7 @@
       "operatingSystem": "Web",
       "url": "https://promptdeco.de/",
       "publisher": { "@id": "https://promptdeco.de/#organization" },
-      "releaseNotes": "The decoder on this page is usable now and runs entirely in the browser. The command-line scanner with the config engine runs from source. The content engine, the GitHub Action and the benchmark are planned, not built, and no price is set."
+      "releaseNotes": "The decoder on this page is usable now and runs entirely in the browser. The command-line scanner with the config and content engines runs from source, with no release yet. The GitHub Action is written and unreleased, waiting on the first scanner release. The benchmark is open at github.com/PromptDecode/bench. No price is set."
     },
     {
       "@type": "WebPage",
@@ -98,7 +98,7 @@
 
 <p class="banner" id="banner">
   <span class="banner__dot" aria-hidden="true"></span>
-  The decoder on this page works and runs in your browser. The config scanner runs from source. The content engine, the Action and the benchmark are planned and not built yet.
+  The decoder on this page works and runs in your browser. The config and content engines run from source; neither is released yet. The Action is written and waits on the first scanner release. The benchmark is open.
 </p>
 
 <main id="main">
@@ -145,8 +145,8 @@
   <div class="sec">
     <div class="sec__head" data-reveal>
       <p class="eyebrow">02 · Two engines</p>
-      <h2 id="engines-h">One reads the workflow. One will read the repo.</h2>
-      <p class="lede">The config engine is built and runs from source. The content engine is not. Both transcripts below are illustrations of the output format, not recordings.</p>
+      <h2 id="engines-h">One reads the workflow. One reads the repo.</h2>
+      <p class="lede">The config and content engines are built and run from source through <code>promptdecode scan</code>, with no release yet. Both transcripts below are illustrations of the output format, not recordings.</p>
     </div>
 
     <div class="engines">
@@ -166,9 +166,9 @@
       </article>
 
       <article class="engine" data-reveal>
-        <h3 class="engine__name">content <span class="chip chip--planned">planned</span></h3>
-        <p class="engine__body">Hidden-text payloads across repository content: Unicode tag-block characters, bidi overrides, variation-selector runs. Every finding decoded, not merely flagged. The decoder above is this engine's rule set, running on one piece of text.</p>
-        <pre class="term" aria-label="Illustration of planned content engine output"><span class="term__dim">$</span> promptdecode scan --engine content .
+        <h3 class="engine__name">content <span class="chip chip--shipping">shipping</span></h3>
+        <p class="engine__body">Hidden-text payloads across repository content: Unicode tag-block characters, bidi overrides, variation-selector runs. Every finding decoded, not merely flagged. The decoder above is this engine's rule set, running on one piece of text. Runs from source today; no release yet. Source: <a href="https://github.com/PromptDecode/promptdecode">PromptDecode/promptdecode</a>.</p>
+        <pre class="term" aria-label="Illustration of content engine output"><span class="term__dim">$</span> promptdecode scan --engine content .
 
 <span class="term__dim">docs/CONTRIBUTING.md:42</span>
   <span class="term__hit">HIGH</span>  tag-block run, 58 code points (U+E0020 to U+E007E)
@@ -188,16 +188,16 @@
 <section class="band" id="install" aria-labelledby="install-h">
   <div class="sec sec--split">
     <div class="sec__head" data-reveal>
-      <p class="eyebrow">03 · Install <span class="chip chip--planned">planned</span></p>
+      <p class="eyebrow">03 · Install <span class="chip chip--planned">not released</span></p>
       <h2 id="install-h">Three lines, when there is something to install.</h2>
-      <p class="lede">The Action is designed and unwritten. <code>promptdecode/action@v1</code> does not resolve today, so the snippet is shown rather than offered for copying: pasting it into a workflow would fail the run.</p>
+      <p class="lede">The Action is written (<a href="https://github.com/PromptDecode/action">PromptDecode/action</a>) and waits on the first scanner release. <code>promptdecode/action@v1</code> does not resolve today, so the snippet stays shown rather than offered for copying: pasting it into a workflow would fail the run.</p>
       <p class="lede">The intent it records: findings post as check annotations on the pull request. No account, no token exchange, and nothing leaving the runner.</p>
     </div>
     <div class="snip" data-reveal>
-      <p class="snip__bar"><span>.github/workflows/ci.yml</span><span class="chip chip--planned">planned</span></p>
-      <pre class="term term--lg" aria-label="Illustration of the planned workflow step">- <span class="term__dim">uses:</span> promptdecode/action@v1
+      <p class="snip__bar"><span>.github/workflows/ci.yml</span><span class="chip chip--planned">not released</span></p>
+      <pre class="term term--lg" aria-label="Illustration of the workflow step; not usable until @v1 resolves">- <span class="term__dim">uses:</span> promptdecode/action@v1
   <span class="term__dim">with:</span>
-    <span class="term__dim">engines:</span> config, content</pre>
+    <span class="term__dim">fail-on:</span> error</pre>
     </div>
   </div>
 </section>
@@ -210,7 +210,7 @@
       <p data-reveal>Published evasion rates against commercial detectors swing wildly with the technique used. A number that moves that much is not a number, and we will not print one to make a point.</p>
       <p data-reveal>Two things are worth publishing instead. Deterministic coverage of named Unicode classes: every code point in a listed range is found, every time. And recall at a stated false-positive rate on a named corpus, with the corpus and the harness in the open.</p>
       <p data-reveal>If a class is not on the list, we do not detect it. <em class="claims__hi">The list is the claim.</em></p>
-      <p data-reveal>Today the list is short and the whole of it is above: tag block, bidi overrides, variation selectors, decoded in your browser. The benchmark that would carry the rest is not written.</p>
+      <p data-reveal>Today the list is short and the whole of it is above: tag block, bidi overrides, variation selectors, decoded in your browser. The benchmark is open: <a href="https://github.com/PromptDecode/bench">github.com/PromptDecode/bench</a>, corpus <code>promptdecode-bench</code>, 212 cases, 80 attack and 132 benign. Its reference detector finds 80 of 80 attack cases and flags none of the 132 benign cases at every operating point. The repository's own <a href="https://github.com/PromptDecode/bench/blob/main/results.json">results.json</a> is plain about what that does and does not show: "This detector separates this corpus completely. That is a fact about a corpus and a detector written in the same repository, not evidence that the detector generalises. Until the corpus contains cases this detector fails, the recall figure measures the difficulty of the corpus, not the reach of the detector."</p>
     </div>
   </div>
 </section>
@@ -220,7 +220,7 @@
     <div class="sec__head" data-reveal>
       <p class="eyebrow">05 · Pricing <span class="chip chip--planned">planned</span></p>
       <h2 id="pricing-h">Free where the code is public.</h2>
-      <p class="lede">The shape is decided, the figures are not. Nothing is for sale, no tier has a price, and there is nothing to buy until the engines exist.</p>
+      <p class="lede">The shape is decided, the figures are not. Nothing is for sale, no tier has a price, and there is nothing to buy until the engines are released.</p>
     </div>
     <div class="tiers">
       <div class="tier" data-reveal>
