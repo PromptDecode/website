@@ -1,9 +1,12 @@
 # Claims on the page, and what backs them
 
-One thing on this site is built, and the rest is a plan. This file keeps the two
-apart, and records what was taken out of the design canvas and why. When a plan
-ships, move it to "Facts", cite the file or URL that proves it, and change its
-tense on the page.
+Most of what this site describes is now built: the decoder, the config and
+content engines, and the open benchmark. The GitHub Action is written but
+unreleased. What remains a plan is Living Brain's use of the content engine,
+and pricing. This file keeps the
+built and unbuilt apart, and records what was taken out of the design canvas
+and why. When a plan ships, move it to "Facts", cite the file or URL that
+proves it, and change its tense on the page.
 
 ## Facts
 
@@ -14,22 +17,21 @@ tense on the page.
 | The three classes it reads | decoder note, `llms.txt` | The single source `tools/core/classes.json`, from which `tools/generate.py` writes the code, the README table and `llms.txt`. `tools/check.py` fails on any difference and runs the shared vectors in `tools/core/vectors.json` against the decoder |
 | Tag-block characters mirror printable ASCII at U+E0000 | `01 · Decode` | Unicode 16.0, Tags block. Demonstrable in the decoder itself |
 | A copied revealed pane still shows which characters were hidden | `01 · Decode` | The renderer brackets every hidden run with ⟪ ⟫ (U+27EA/U+27EB) and marks the run for assistive technology. The double angle brackets cannot appear in a decoded payload, which is ASCII, or in a U+XXXX hex label. `tools/check.py` fails if the brackets or the marking are dropped |
-| Nothing else is built | banner, every `planned` chip, `llms.txt` | `github.com/PromptDecode` held no repository other than this site when the page was written |
+| The content engine is built and runs from source | engines lede, content card, `llms.txt` | `promptdecode-content`: repository walker, decoded findings, JSON and SARIF output (`PromptDecode/promptdecode`#9); `promptdecode scan` runs it (#11). No release yet |
+| The GitHub Action is written and merged, and unreleased | Install section, `llms.txt` | `PromptDecode/action`#2 (https://github.com/PromptDecode/action), merged 2026-09-22. No tag, so `promptdecode/action@v1` does not resolve. It downloads a scanner release, and none exists yet |
+| The benchmark is open, with a caveat on what it measures | `04 · What we claim`, `llms.txt` | https://github.com/PromptDecode/bench (PR #2, merged 2026-09-19) and its `results.json`. Corpus `promptdecode-bench`: 212 cases, 80 attack and 132 benign, every case written for the corpus. Its reference detector finds 80 of 80 attack and flags none of the 132 benign at every operating point; `results.json` says outright that this measures the corpus, not the detector |
 | No cookies, no analytics | footer | `index.html` loads `promptdecode.js` and Google Fonts, nothing else. `tools/check.py` fails on any other third-party script |
 | A Factory Zero venture | footer, JSON-LD, `llms.txt` | Factory Zero registry record FZ-009 (`Factory-Zero/website`, `assets/fz-data.js`) |
 | "Built with" strip: Polar for payments and Keep Shipping for deploys, both **planned**; hosted on Cloudflare (the site, live) | footer of `index.html` and `404.html`, `llms.txt` | Factory Zero registry: the `uses` of FZ-009 in `Factory-Zero/website` `assets/fz-data.js`, published as https://factory0.ventures/stack.json and vendored in `tools/built-with.json`. Regenerate with `python3 tools/built-with.py --pull`; `tools/check.py` fails if the strip drifts from the vendored copy. Never edit the strip by hand |
 
 ## Plans (each carries a `planned` chip, or sits in a section that does)
 
-Source for every plan: the Claude Design canvas `promptdecode.dc.html` (project
-`5b6b2917-7759-4ee9-883a-af2275c16303`). They are product intentions, not
-specifications, and no code exists for the rest. The `config` engine and the
-`promptdecode scan` CLI are built (source at
-`PromptDecode/promptdecode`, no release yet) and carry the `shipping` chip.
+Source for the remaining plans: the Claude Design canvas `promptdecode.dc.html`
+(project `5b6b2917-7759-4ee9-883a-af2275c16303`). They are product intentions,
+not specifications. The `config` and `content` engines and the `promptdecode
+scan` CLI are built (source at `PromptDecode/promptdecode`, no release yet) and
+carry the `shipping` chip.
 
-- A `content` engine: the decoder's rules across a whole repository.
-- A GitHub Action, `promptdecode/action@v1`, posting check annotations.
-- An open benchmark: a named corpus and harness.
 - Pricing: free for public repositories, paid per developer for private ones.
 
 ## Illustrations (sample data, labelled on the page)
@@ -46,10 +48,10 @@ specifications, and no code exists for the rest. The `config` engine and the
 
 | Canvas said | Why it is not on the page |
 | :--- | :--- |
-| `$0` for public repos and `$8 per developer / month` for private | No price for anything planned, and both engines are planned. The shape stays ("Free" and "Paid"), the figures went. `tools/check.py` fails on anything that looks like a price |
-| A **Copy** button on the workflow snippet | `promptdecode/action@v1` does not resolve. Copying it would hand someone a step that fails their run. The snippet is shown, chipped `planned`, with a sentence saying why |
+| `$0` for public repos and `$8 per developer / month` for private | No price for anything planned, and both engines were a plan at the time. The shape stays ("Free" and "Paid"), the figures went. `tools/check.py` fails on anything that looks like a price |
+| A **Copy** button on the workflow snippet | `promptdecode/action@v1` does not resolve. Copying it would hand someone a step that fails their run. The snippet is shown, chipped `not released`, with a sentence saying why |
 | "Character-level evasion of commercial detectors runs 64 to 100% depending on technique" | A specific figure with no source to hand. The argument it supports (that a number moving that far is not a number) is stronger without it and is kept. Restore it only with a citation, in this table |
-| Both engines described in the present tense ("Static taint analysis of GitHub Actions... Deterministic. No model. Zero cost per scan.") | Neither is built. Conditional tense, a `planned` chip on each, and a lede saying the transcripts are illustrations |
+| Both engines described in the present tense ("Static taint analysis of GitHub Actions... Deterministic. No model. Zero cost per scan.") | Neither was built at the time. Conditional tense with a `planned` chip on each was used then; both are built now, run from source, and carry a `shipping` chip. The lede saying the transcripts are illustrations stays |
 | "Zero cost per scan" | A pricing claim about software that does not exist |
 | Footer links to `docs.promptdeco.de` and `github.com/promptdecode/benchmark` | Neither exists. Dead links. The footer lists only what resolves, and `tools/check.py` holds the list of the ones that do not |
 | `promptdecode · 2026` beside links to Docs and Benchmark | Kept the line, dropped the two dead links |

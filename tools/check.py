@@ -343,11 +343,11 @@ for m in re.finditer(r"[$€£]\s?\d|\d\s?(USD|EUR|GBP)\b|/\s?(mo|month)\b", vis
 
 # 2. No status that claims availability.
 for m in re.finditer(r">\s*(Available|Beta|Popular|Live now|GA)\s*<", index_html):
-    fail(f"index.html: status badge {m.group(1)!r}; only the decoder and the config engine are available, so nothing else may say so")
+    fail(f"index.html: status badge {m.group(1)!r}; nothing is released, so nothing else may say so")
 
 
-# 3. Every engine and every tier carries a status chip; the decoder and the
-#    config engine are the two things allowed to say shipping.
+# 3. Every engine and every tier carries a status chip; the decoder, the config
+#    engine and the content engine are the three things allowed to say shipping.
 def cards(cls, closing):
     return [c.split(closing)[0] for c in re.split(r'class="' + re.escape(cls) + r'"', index_html)[1:]]
 
@@ -359,8 +359,8 @@ for cls, closing in (("engine", "</article>"), ("tier", "</div>")):
     for n, card in enumerate(found, 1):
         if "chip--planned" not in card and "chip--shipping" not in card:
             fail(f"index.html: .{cls} #{n} has no status chip")
-if index_html.count("chip--shipping") != 2:
-    fail("index.html: exactly two things ship (the decoder and the config engine); found "
+if index_html.count("chip--shipping") != 3:
+    fail("index.html: exactly three things ship (the decoder, the config engine and the content engine); found "
          f"{index_html.count('chip--shipping')} shipping chips")
 
 # 4. The banner says what is and is not built.

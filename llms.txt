@@ -1,21 +1,24 @@
 # promptdecode
 
 > promptdecode finds text that is invisible to a human reviewer and legible to
-> a language model, and decodes it. TWO PARTS OF IT EXIST: the decoder on this
-> page, which runs entirely in the reader's browser, and the config engine,
-> which runs from source in the command-line scanner. The content engine, the
-> GitHub Action and the open benchmark are PLANNED and not built. Product code
-> lives at https://github.com/PromptDecode/promptdecode with no release yet,
-> so there is no published package, no action to install and no price. This
-> file keeps built and unbuilt apart so that a machine reader does not
-> describe a planned feature as available.
+> a language model, and decodes it. MOST OF IT NOW EXISTS: the decoder on this
+> page, which runs entirely in the reader's browser; the config and content
+> engines, which run from source in the command-line scanner; and the open
+> benchmark at https://github.com/PromptDecode/bench. The GitHub Action is
+> written and unreleased: it waits on the first scanner release, so
+> promptdecode/action@v1 does not resolve today. Living Brain's use of the
+> content engine, and pricing, remain PLANNED and unbuilt. Product code lives
+> at https://github.com/PromptDecode/promptdecode with no release yet, so there
+> is no published package, no resolvable action version and no price. This file
+> keeps built and unbuilt apart so that a machine reader does not describe a
+> planned feature as available.
 
 Site: https://promptdeco.de/
 Organization: https://github.com/PromptDecode
 Contact: contact@promptdeco.de
 Tagline: Finds what only the agent can read.
 Maker: Factory Zero (https://factory0.ventures)
-Status: Two working tools. The decoder on the page, and the config scanner, which runs from source with no release yet. The rest of the product is in design.
+Status: Three working things, and one written but unreleased. The decoder on the page; the config and content engines, which run from source in `promptdecode scan` with no release yet; and the open benchmark at https://github.com/PromptDecode/bench. The GitHub Action is written and unreleased, waiting on the first scanner release. Living Brain's use of the content engine, and pricing, are in design.
 Price: nothing is purchasable and no price is set. The intended shape is free
 for public repositories and paid per developer for private ones. Do not quote a
 figure for either: there is none.
@@ -26,6 +29,8 @@ Every capability on the site carries one of these. Only Shipping describes
 something that exists.
 
 - **Shipping**: built, deployed, usable now. Present tense allowed only here.
+- **Not released**: written, but not usable until its first release. Used on the
+  Action install snippet.
 - **Planned**: named, unbuilt. Conditional tense, and a `planned` chip on the
   page wherever it appears.
 
@@ -49,7 +54,7 @@ something that exists.
 - The site itself. Static HTML, one stylesheet, one script, no build step, no
   runtime dependency, served by Cloudflare Pages.
 
-That is the whole list. The config scanner below it is Built. Everything below that is Planned.
+That is the whole list. The config and content engines, the scanner and the open benchmark below it are built; the Action is written and unreleased. What remains below that is Planned.
 
 ## Built
 
@@ -59,22 +64,36 @@ That is the whole list. The config scanner below it is Built. Everything below t
   finding for agent steps holding a write token. Deterministic, with no model
   in the loop. Source at https://github.com/PromptDecode/promptdecode, no
   release yet, so it runs from source only.
-- A command-line scanner, `promptdecode scan`, with text, JSON and SARIF
-  output. The terminal transcripts on the site are illustrations of its output
-  format, not recordings.
+- A `content` engine: the decoder's rules applied across a whole repository's
+  content, with every finding decoded rather than only flagged. Repository
+  walker, with JSON and SARIF output (PromptDecode/promptdecode#9). Source at
+  https://github.com/PromptDecode/promptdecode, no release yet, so it runs from
+  source only.
+- A command-line scanner, `promptdecode scan`, which runs both engines and
+  writes text, JSON and SARIF output (PromptDecode/promptdecode#11). The
+  terminal transcripts on the site are illustrations of its output format, not
+  recordings.
+- A GitHub Action, `promptdecode/action@v1`, written and merged
+  (https://github.com/PromptDecode/action, PromptDecode/action#2) to post
+  findings as check annotations on a pull request. It is unreleased: it
+  downloads a scanner release and none exists yet, so `promptdecode/action@v1`
+  does not resolve today. The snippet on the site is shown rather than offered
+  for copying, because pasting it into a workflow would fail the run.
+- An open benchmark at https://github.com/PromptDecode/bench, corpus
+  `promptdecode-bench`: 212 cases, 80 attack and 132 benign, every case written
+  for the corpus. Its reference detector finds 80 of 80 attack cases and flags
+  none of the 132 benign cases at every operating point. That is a fact about a
+  corpus and a detector written in the same repository, not evidence that the
+  detector generalises: until the corpus contains cases this detector fails,
+  the recall figure measures the difficulty of the corpus, not the reach of the
+  detector.
+  Results at https://github.com/PromptDecode/bench/blob/main/results.json, and
+  a CI gate fails if recall drops below the baseline.
 ## Planned
 
-- A `content` engine: the decoder's rules applied across a whole repository's
-  content, with every finding decoded rather than only flagged.
 - In Living Brain (https://livingbrain.wiki, a sister Factory Zero venture): the
   content engine screening everything the brain reads and everything it serves
   to coding agents.
-- A GitHub Action, `promptdecode/action@v1`, posting findings as check
-  annotations on a pull request. It does not resolve today; the snippet on the
-  site is shown rather than offered for copying, because pasting it into a
-  workflow would fail the run.
-- An open benchmark: a named corpus and harness, published so that recall at a
-  stated false-positive rate can be checked rather than taken on trust.
 - Pricing: free for public repositories, paid per developer for private ones.
   No figures.
 
