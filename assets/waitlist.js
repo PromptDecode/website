@@ -33,19 +33,31 @@
   var button = document.getElementById("wl-go");
   var human = document.getElementById("wl-human");
   var msg = document.getElementById("wl-msg");
-  var label = button.textContent;
+  var labelEl = document.getElementById("wl-label");
+  var done = document.getElementById("wl-done");
+  var label = labelEl.textContent;
   var widget = null;
   var token = "";
   var broken = false;
 
-  function say(text, bad) {
+  /* Errors only: shown inline under the field (role="alert"). With onEmail
+     the field is marked invalid and focused. say("") clears. */
+  function say(text, onEmail) {
     msg.textContent = text;
-    msg.classList.toggle("wl__msg--bad", !!bad);
+    msg.hidden = !text;
+    email.setAttribute("aria-invalid", onEmail ? "true" : "false");
+    if (onEmail) email.focus();
+  }
+
+  function busy(on) {
+    button.disabled = on;
+    if (on) button.setAttribute("aria-busy", "true"); else button.removeAttribute("aria-busy");
+    labelEl.textContent = on ? "Sending…" : label;
   }
 
   function unavailable() {
     broken = true;
-    say("The human check did not load, so nothing can be sent right now. Try again later.", true);
+    say("The human check did not load, so nothing can be sent right now. A content blocker may be stopping challenges.cloudflare.com. Reload to try again.");
   }
 
   function theme() {
@@ -84,15 +96,13 @@
     e.preventDefault();
     var value = email.value.trim();
     if (!value || !email.checkValidity()) {
-      say("That does not look like an email address.", true);
-      email.focus();
+      say("That email address doesn’t look right. Check it and try again.", true);
       return;
     }
     if (broken || !window.turnstile) { unavailable(); return; }
-    if (!token) { say("Complete the human check first.", true); return; }
+    if (!token) { say("One more step: complete the human check below the field, then send."); return; }
 
-    button.disabled = true;
-    button.textContent = "Sending…";
+    busy(true);
     say("");
     var body = { email: value, product: "promptdecode", captchaToken: token };
     fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
@@ -101,24 +111,39 @@
         return res.json().catch(function () { return {}; }).then(function (p) {
           var type = (p && p.type) || "";
           if (/\/captcha-failed$/.test(type)) throw new Error("captcha");
-          if (res.status === 429) throw new Error("rate");
+          if (res.status === 429 || /\/rate-limited$/.test(type)) throw new Error("rate");
           if (res.status === 400) throw new Error("invalid");
           throw new Error(String(res.status));
         });
       })
       .then(function () {
-        form.reset();
-        if (human) human.hidden = true;
-        say("Check your inbox for a confirmation link. Your place is held once you open it.");
+        document.getElementById("wl-done-email").textContent = value;
+        form.hidden = true;
+        done.hidden = false;
+        done.focus();
+        reset();
       })
       .catch(function (err) {
         var why = err && err.message;
-        say(why === "captcha" ? "The human check failed. Try it again."
-          : why === "rate" ? "Too many tries. Wait a minute and try again."
-          : why === "invalid" ? "That address was not accepted. Check it and try again."
-          : "Could not reach the waitlist right now. Try again in a while.", true);
+        if (why === "invalid") say("That email address doesn’t look right. Check it and try again.", true);
+        else say(why === "captcha" ? "The human check didn’t go through. It’s been reset: complete it again, then send."
+          : why === "rate" ? "Too many tries. Wait a minute, then try again."
+          : "We couldn’t reach the waitlist just now. Try again in a moment.");
         reset();
       })
-      .then(function () { button.disabled = false; button.textContent = label; });
+      .then(function () { busy(false); });
+  });
+
+  email.addEventListener("input", function () {
+    if (email.getAttribute("aria-invalid") === "true") say("");
+  });
+
+  document.getElementById("wl-again").addEventListener("click", function () {
+    done.hidden = true;
+    form.hidden = false;
+    say("");
+    reset();
+    email.focus();
+    email.select();
   });
 })();
