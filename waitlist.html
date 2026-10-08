@@ -41,11 +41,17 @@
     <label class="wl__label" for="wl-email">Email</label>
     <div class="wl__row">
       <input class="wl__input" id="wl-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com" aria-describedby="wl-msg">
-      <button class="btn btn--accent" id="wl-go" type="submit">Join the waitlist</button>
+      <button class="btn btn--accent" id="wl-go" type="submit"><span class="wl__spin" aria-hidden="true"></span><span id="wl-label">Join the waitlist</span></button>
     </div>
     <div class="wl__human" id="wl-human" role="group" aria-label="Human check" hidden></div>
-    <p class="wl__msg" id="wl-msg" role="status" aria-live="polite"></p>
+    <p class="wl__msg wl__msg--bad" id="wl-msg" role="alert" hidden></p>
   </form>
+  <div class="wl__done" id="wl-done" role="status" aria-live="polite" tabindex="-1" hidden>
+    <h2 class="wl__done-h">Check your inbox</h2>
+    <p>We sent a confirmation link to <strong id="wl-done-email"></strong>. Click it to hold your place on the promptdecode waitlist.</p>
+    <p class="wl__fine">It can take a minute. Check Spam or Promotions if it isn’t there. Already confirmed before? Then you’re already on the list; nothing more to do.</p>
+    <p class="wl__fine"><button class="wl__again" id="wl-again" type="button">Use a different email</button></p>
+  </div>
   <p class="wl__fine">We send a confirmation link first, then one email when the Action ships. No newsletter, and the address is not shared. The form needs JavaScript; without it, nothing is sent.</p>
 </main>
 
