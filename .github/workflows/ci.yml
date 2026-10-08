@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # check.py skips the shared-vectors leg when node is absent, so CI has to
+      # provide node for that leg to run.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Check
+        run: python3 tools/check.py
+
+      - name: Assemble dist
+        run: bash tools/build-dist.sh
