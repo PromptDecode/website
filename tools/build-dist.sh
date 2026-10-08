@@ -14,7 +14,7 @@ cd "$(dirname "$0")/.."
 rm -rf dist
 mkdir -p dist
 
-for f in index.html 404.html robots.txt sitemap.xml llms.txt site.webmanifest _headers _redirects; do
+for f in index.html 404.html waitlist.html robots.txt sitemap.xml llms.txt site.webmanifest _headers _redirects; do
   cp "$f" dist/
 done
 for d in assets .well-known; do
@@ -35,7 +35,7 @@ hash_of() {
   else shasum -a 256 "$1" | cut -c1-8; fi
 }
 
-for f in promptdecode.css promptdecode.js; do
+for f in promptdecode.css promptdecode.js waitlist.js; do
   h=$(hash_of "dist/assets/$f")
   # `sed -i` is not portable: GNU takes no argument, BSD demands one.
   find dist -name '*.html' | while IFS= read -r page; do
@@ -43,7 +43,10 @@ for f in promptdecode.css promptdecode.js; do
   done
   # A sed that matches nothing exits 0. Fail instead of shipping an immutable
   # asset under a URL that never changes.
-  grep -q "/assets/$f?v=$h\"" dist/index.html || { echo "cache stamp for $f did not apply" >&2; exit 1; }
+  # waitlist.js is loaded by waitlist.html only; the rest by index.html.
+  page=dist/index.html
+  [ "$f" = waitlist.js ] && page=dist/waitlist.html
+  grep -q "/assets/$f?v=$h\"" "$page" || { echo "cache stamp for $f did not apply" >&2; exit 1; }
 done
 
 echo "dist/ assembled:"

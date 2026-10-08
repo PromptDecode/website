@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waitlist · promptdecode</title>
+<meta name="description" content="One email when the promptdecode GitHub Action and the private-repository tier open. Nothing else is sent.">
+<link rel="canonical" href="https://promptdeco.de/waitlist">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark light">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/promptdecode.css">
+<script src="/assets/waitlist.js" defer></script>
+</head>
+<body>
+<header class="site">
+  <nav class="nav" aria-label="Primary">
+    <a class="nav__brand" href="/">promptdecode</a>
+    <div class="nav__links">
+      <a href="/#demo">demo</a>
+      <a href="/#install">install</a>
+      <a href="/#pricing">pricing</a>
+      <a href="https://github.com/PromptDecode">github</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main" class="wl">
+  <p class="eyebrow">Waitlist <span class="chip chip--planned">planned</span></p>
+  <h1 class="wl__h">One email when the Action and private repos open.</h1>
+  <p class="lede">The decoder on the front page works today and needs no account. The GitHub Action is written and waits on the first scanner release; the private-repository tier waits on that too. Leave an address and we write once, when there is something to install.</p>
+  <p class="lede">This page is separate from the decoder on purpose. The decoder page cannot make a network request at all; this one can reach one address, <code>api.promptdeco.de</code>, and sends it only what you type below.</p>
+
+  <form class="wl__form" id="wl-form" novalidate aria-label="Join the waitlist">
+    <label class="wl__label" for="wl-email">Email</label>
+    <div class="wl__row">
+      <input class="wl__input" id="wl-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com" aria-describedby="wl-msg">
+      <button class="btn btn--accent" id="wl-go" type="submit">Join the waitlist</button>
+    </div>
+    <div class="wl__human" id="wl-human" role="group" aria-label="Human check" hidden></div>
+    <p class="wl__msg" id="wl-msg" role="status" aria-live="polite"></p>
+  </form>
+  <p class="wl__fine">We send a confirmation link first, then one email when the Action ships. No newsletter, and the address is not shared. The form needs JavaScript; without it, nothing is sent.</p>
+</main>
+
+<footer class="site-foot">
+  <div class="foot">
+    <span>&copy; 2026 promptdecode · a <a class="foot__fz" href="https://factory0.ventures">Factory Zero</a> venture</span>
+    <span class="foot__links">
+      <a href="https://github.com/PromptDecode">GitHub</a>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/.well-known/security.txt">Security</a>
+    </span>
+  </div>
+  <p class="foot__fine">No cookies · no analytics · this page sends only the address you type, to api.promptdeco.de</p>
+  <!-- built-with:start -->
+  <ul class="built-with" aria-label="Built with">
+    <li class="bw"><span class="bw__role">Hosted on</span> <a class="bw__name" href="https://www.cloudflare.com">Cloudflare</a></li>
+    <li class="bw bw--planned"><span class="bw__role">Payments by</span> <a class="bw__name" href="https://polar.sh">Polar</a> <span class="bw__tag"><span class="bw__paren">(</span>planned<span class="bw__paren">)</span></span></li>
+    <li class="bw bw--planned"><span class="bw__role">Deploys by</span> <a class="bw__name" href="https://keepshipping.run/">Keep Shipping</a> <span class="bw__tag"><span class="bw__paren">(</span>planned<span class="bw__paren">)</span></span></li>
+    <li class="bw bw--source"><span class="bw__role">Listed by</span> <a class="bw__name" href="https://factory0.ventures/ventures/promptdecode/">Factory Zero</a></li>
+  </ul>
+  <!-- built-with:end -->
+</footer>
+
+</body>
+</html>

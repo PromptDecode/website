@@ -78,7 +78,7 @@ import urllib.request
 from html.parser import HTMLParser
 
 ROOT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else pathlib.Path(__file__).resolve().parent.parent)
-PAGES = ["index.html", "404.html"]
+PAGES = ["index.html", "404.html", "waitlist.html"]
 ALLOWED_HOSTS = {"promptdeco.de", "fonts.googleapis.com", "fonts.gstatic.com"}  # itself (canonical), and Google Fonts
 
 failures = []
@@ -141,7 +141,9 @@ for name in PAGES:
     for path in p.local:
         if path == "/":
             continue
-        if not (ROOT / path.lstrip("/")).exists():
+        local = ROOT / path.lstrip("/")
+        # Workers assets serve /waitlist from waitlist.html.
+        if not (local.exists() or local.with_name(local.name + ".html").exists()):
             fail(f"{name}: {path} does not exist")
     for tag, url in p.remote:
         host = re.sub(r"^https://([^/]+).*$", r"\1", url)
@@ -172,6 +174,21 @@ for call in (r"\bfetch\s*\(", r"XMLHttpRequest", r"sendBeacon", r"new\s+WebSocke
         fail(f"assets/promptdecode.js: contains {call!r}; the page promises that nothing you paste leaves the browser")
 if "connect-src 'none'" not in headers:
     fail("_headers: connect-src is not 'none'; the decoder's privacy claim is no longer enforced by the browser")
+# The waitlist is the one page on the network, kept apart so the promise above
+# still holds for the decoder: its script is its own file, loaded by
+# waitlist.html alone, and _headers widens connect-src for that page only
+# (detaching the site-wide policy) and only to the waitlist Worker.
+for name in PAGES:
+    if name != "waitlist.html" and "waitlist.js" in (ROOT / name).read_text(encoding="utf-8"):
+        fail(f"{name}: loads assets/waitlist.js; only waitlist.html may reach the network")
+if "waitlist.js" in index_html or "promptdecode.js" in (ROOT / "waitlist.html").read_text(encoding="utf-8"):
+    fail("waitlist.html and index.html must not share a script")
+wl_rules = re.findall(r"^(/waitlist(?:\.html)?)\n  ! Content-Security-Policy\n  Content-Security-Policy: ([^\n]*)$", headers, re.M)
+if sorted(r[0] for r in wl_rules) != ["/waitlist", "/waitlist.html"]:
+    fail("_headers: /waitlist and /waitlist.html must each detach the site-wide CSP and set their own")
+for _, csp in wl_rules:
+    if "connect-src https://api.promptdeco.de;" not in csp:
+        fail("_headers: the waitlist page may connect to https://api.promptdeco.de and nothing else")
 if "no cookies" not in visible.lower():
     fail("index.html: the footer lost its no-cookies line")
 
@@ -382,7 +399,7 @@ if re.search(r"<button[^>]*>\s*copy\s*<", index_html, re.I):
          "someone a step that fails the run")
 
 # 6. House style: no em-dashes, in any spelling.
-for path in ("index.html", "404.html", "llms.txt", "README.md", "COPY.md"):
+for path in ("index.html", "404.html", "waitlist.html", "llms.txt", "README.md", "COPY.md"):
     f = ROOT / path
     if not f.exists():
         continue

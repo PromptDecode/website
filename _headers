@@ -16,6 +16,20 @@
   Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'
 
+# The waitlist page is the one page allowed on the network, and only to the
+# waitlist Worker (connect-src) and Cloudflare Turnstile (script-src for its
+# api.js, frame-src for the challenge). "! Content-Security-Policy" detaches
+# the site-wide policy above first, so the two are not both enforced; every
+# other path, the decoder included, keeps connect-src 'none'.
+# tools/check.py holds both lines.
+/waitlist
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://api.promptdeco.de; frame-src https://challenges.cloudflare.com; form-action 'none'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'
+
+/waitlist.html
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://api.promptdeco.de; frame-src https://challenges.cloudflare.com; form-action 'none'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'
+
 /assets/*.css
   Cache-Control: public, max-age=31536000, immutable
 
