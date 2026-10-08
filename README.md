@@ -111,6 +111,16 @@ it is enforced twice:
 Any future feature that needs the network has to change both, in a diff, in
 public.
 
+The first one is the waitlist (2026-10-08). It lives on its own page,
+`waitlist.html` at `/waitlist`, with its own script, `assets/waitlist.js`, so
+the decoder page and `assets/promptdecode.js` are unchanged and still offline.
+`_headers` detaches the site-wide policy for `/waitlist` only and sets one that
+allows `connect-src https://api.promptdeco.de` (the waitlist Worker,
+`PromptDecode/waitlist-backend`) plus Cloudflare Turnstile. `tools/check.py`
+fails if any other page loads that script or if the waitlist policy reaches
+anywhere else. After a deploy, `curl -sI https://promptdeco.de/waitlist` must
+show exactly one `content-security-policy` header, the waitlist one.
+
 ## The page
 
 | Anchor | Section | Job |
