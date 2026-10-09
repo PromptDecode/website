@@ -76,7 +76,7 @@ echo "checking that no repository file is served:"
 # passes when it cannot reach anything is worse than no verification, so an
 # unreachable origin is a failure here, and so is any code other than 404.
 base=""
-for candidate in "https://promptdeco.de" "https://promptdecode.earthos-waitlist.workers.dev"; do
+for candidate in "https://promptdeco.de" "https://promptdecode.factory0.workers.dev"; do
   if [ "$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$candidate/" || true)" = "200" ]; then
     base="$candidate"
     break
