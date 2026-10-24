@@ -18,10 +18,12 @@ proves it, and change its tense on the page.
 | The three classes it reads | decoder note, `llms.txt` | The single source `tools/core/classes.json`, from which `tools/generate.py` writes the code, the README table and `llms.txt`. `tools/check.py` fails on any difference and runs the shared vectors in `tools/core/vectors.json` against the decoder |
 | Tag-block characters mirror printable ASCII at U+E0000 | `01 · Decode` | Unicode 16.0, Tags block. Demonstrable in the decoder itself |
 | A copied revealed pane still shows which characters were hidden | `01 · Decode` | The renderer brackets every hidden run with ⟪ ⟫ (U+27EA/U+27EB) and marks the run for assistive technology. The double angle brackets cannot appear in a decoded payload, which is ASCII, or in a U+XXXX hex label. `tools/check.py` fails if the brackets or the marking are dropped |
-| The content engine is built and runs from source | engines lede, content card, `llms.txt` | `promptdecode-content`: repository walker, decoded findings, JSON and SARIF output (`PromptDecode/promptdecode`#9); `promptdecode scan` runs it (#11). No release yet |
+| The content engine is built and not released yet | engines lede, content card, `llms.txt` | `promptdecode-content`: repository walker, decoded findings, JSON and SARIF output (`PromptDecode/promptdecode`#9); `promptdecode scan` runs it (#11). No release yet |
 | The GitHub Action is written and merged, and unreleased | Install section, `llms.txt` | `PromptDecode/action`#2 (https://github.com/PromptDecode/action), merged 2026-09-22. No tag, so `promptdecode/action@v1` does not resolve. It downloads a scanner release, and none exists yet |
 | The benchmark is open, with a caveat on what it measures | `04 · What we claim`, `llms.txt` | https://github.com/PromptDecode/bench (PR #2, merged 2026-09-19) and its `results.json`. Corpus `promptdecode-bench`: 212 cases, 80 attack and 132 benign, every case written for the corpus. Its reference detector finds 80 of 80 attack and flags none of the 132 benign at every operating point; `results.json` says outright that this measures the corpus, not the detector |
 | No cookies, no analytics | footer | `index.html` loads `promptdecode.js` and Google Fonts, nothing else. `tools/check.py` fails on any other third-party script |
+| `promptdecode-core` 0.1.0 is on crates.io | `02 · Two engines` lede | crates.io API: `promptdecode-core` 0.1.0, created 2026-10-21, not yanked (checked 2026-10-25) |
+| Status badge: Alpha · a Factory Zero venture | footer | `https://factory0.ventures/ventures/promptdecode/` (200). The badge image ships separately and may 404 until then; `img-src` in `_headers` allows `factory0.ventures` |
 | A Factory Zero venture | footer, JSON-LD, `llms.txt` | Factory Zero registry record FZ-009 (`Factory-Zero/website`, `assets/fz-data.js`) |
 | "Built with" strip: Polar for payments and Keep Shipping for deploys, both **planned**; hosted on Cloudflare (the site, live) | footer of `index.html` and `404.html`, `llms.txt` | Factory Zero registry: the `uses` of FZ-009 in `Factory-Zero/website` `assets/fz-data.js`, published as https://factory0.ventures/stack.json and vendored in `tools/built-with.json`. Regenerate with `python3 tools/built-with.py --pull`; `tools/check.py` fails if the strip drifts from the vendored copy. Never edit the strip by hand |
 
@@ -30,8 +32,8 @@ proves it, and change its tense on the page.
 Source for the remaining plans: the Claude Design canvas `promptdecode.dc.html`
 (project `5b6b2917-7759-4ee9-883a-af2275c16303`). They are product intentions,
 not specifications. The `config` and `content` engines and the `promptdecode
-scan` CLI are built (source at `PromptDecode/promptdecode`, no release yet) and
-carry the `shipping` chip.
+scan` CLI are built, with no release yet, and
+carry the `built, not released` chip (the class stays `shipping`).
 
 - Pricing: free for public repositories, paid per developer for private ones.
 

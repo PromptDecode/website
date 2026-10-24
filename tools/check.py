@@ -147,7 +147,9 @@ for name in PAGES:
             fail(f"{name}: {path} does not exist")
     for tag, url in p.remote:
         host = re.sub(r"^https://([^/]+).*$", r"\1", url)
-        if host not in ALLOWED_HOSTS:
+        # The Factory Zero status badge is the one image the page may load from outside.
+        badge = tag == "img" and url.startswith("https://factory0.ventures/badge/")
+        if host not in ALLOWED_HOSTS and not badge:
             fail(f"{name}: third-party <{tag}> from {host}; the page loads nothing but Google Fonts")
     for block in p.jsonld:
         try:

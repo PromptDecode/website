@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>promptdecode · finds what only the agent can read</title>
-<meta name="description" content="Hidden text in a pull request can instruct your coding agent to approve it. promptdecode finds and decodes it. The decoder on this page works in your browser. The config and content engines run from source in the CLI, with no release yet; the GitHub Action is written and waits on the first scanner release.">
+<meta name="description" content="Hidden text in a pull request can instruct your coding agent to approve it. promptdecode finds and decodes it. The decoder on this page works in your browser. The config and content engines are built and not released yet; the GitHub Action is written and waits on the first scanner release.">
 <link rel="canonical" href="https://promptdeco.de/">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark light">
@@ -14,17 +14,17 @@
 <meta property="og:site_name" content="promptdecode">
 <meta property="og:url" content="https://promptdeco.de/">
 <meta property="og:title" content="promptdecode · finds what only the agent can read">
-<meta property="og:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does. The browser decoder works and the config and content engines run from source, with no release yet; the Action is written and waits on the first scanner release.">
+<meta property="og:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does. The browser decoder works and the config and content engines are built, with no release yet; the Action is written and waits on the first scanner release.">
 <meta property="og:image" content="https://promptdeco.de/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
-<meta property="og:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the config scanner runs from source.">
+<meta property="og:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the config scanner is built and not released yet.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://promptdeco.de/assets/og.png">
-<meta name="twitter:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the config scanner runs from source.">
+<meta name="twitter:image:alt" content="promptdecode: hidden text in a pull request can instruct your agent to approve it. A decoder that works in the browser; the config scanner is built and not released yet.">
 <meta name="twitter:title" content="promptdecode · finds what only the agent can read">
-<meta name="twitter:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does. The browser decoder works and the config and content engines run from source, with no release yet; the Action is written and waits on the first scanner release.">
+<meta name="twitter:description" content="Hidden text in a pull request can instruct your coding agent to approve it. We find and decode it before the agent does. The browser decoder works and the config and content engines are built, with no release yet; the Action is written and waits on the first scanner release.">
 
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -65,7 +65,7 @@
       "operatingSystem": "Web",
       "url": "https://promptdeco.de/",
       "publisher": { "@id": "https://promptdeco.de/#organization" },
-      "releaseNotes": "The decoder on this page is usable now and runs entirely in the browser. The command-line scanner with the config and content engines runs from source, with no release yet. The GitHub Action is written and unreleased, waiting on the first scanner release. The benchmark is open at github.com/PromptDecode/bench. No price is set."
+      "releaseNotes": "The decoder on this page is usable now and runs entirely in the browser. The command-line scanner with the config and content engines is built, with no release yet. The GitHub Action is written and unreleased, waiting on the first scanner release. The benchmark is open at github.com/PromptDecode/bench. No price is set."
     },
     {
       "@type": "WebPage",
@@ -98,7 +98,7 @@
 
 <p class="banner" id="banner">
   <span class="banner__dot" aria-hidden="true"></span>
-  The decoder on this page works and runs in your browser. The config and content engines run from source; neither is released yet. The Action is written and waits on the first scanner release. The benchmark is open.
+  The decoder on this page works and runs in your browser. The config and content engines are built; neither is released yet. The Action is written and waits on the first scanner release. The benchmark is open.
 </p>
 
 <main id="main">
@@ -146,13 +146,13 @@
     <div class="sec__head" data-reveal>
       <p class="eyebrow">02 · Two engines</p>
       <h2 id="engines-h">One reads the workflow. One reads the repo.</h2>
-      <p class="lede">The config and content engines are built and run from source through <code>promptdecode scan</code>, with no release yet. Both transcripts below are illustrations of the output format, not recordings.</p>
+      <p class="lede">The config and content engines are built and not released yet. They run through <code>promptdecode scan</code>; the shared detection rules are published as <code>promptdecode-core</code> 0.1.0 on crates.io. Both transcripts below are illustrations of the output format, not recordings.</p>
     </div>
 
     <div class="engines">
       <article class="engine" data-reveal>
-        <h3 class="engine__name">config <span class="chip chip--shipping">shipping</span></h3>
-        <p class="engine__body">Static taint analysis of GitHub Actions. Untrusted input, such as pull request titles, issue bodies and comments, traced to an agent step that holds a write token. Deterministic, with no model in the loop. Runs from source today; no release yet. Source: <a href="https://github.com/PromptDecode/promptdecode">PromptDecode/promptdecode</a>.</p>
+        <h3 class="engine__name">config <span class="chip chip--shipping">built, not released</span></h3>
+        <p class="engine__body">Static taint analysis of GitHub Actions. Untrusted input, such as pull request titles, issue bodies and comments, traced to an agent step that holds a write token. Deterministic, with no model in the loop. Built; no release of the scanner yet.</p>
         <pre class="term" aria-label="Illustration of config engine output"><span class="term__dim">$</span> promptdecode scan --engine config .github/workflows/
 
 <span class="term__dim">.github/workflows/agent-review.yml</span>
@@ -166,8 +166,8 @@
       </article>
 
       <article class="engine" data-reveal>
-        <h3 class="engine__name">content <span class="chip chip--shipping">shipping</span></h3>
-        <p class="engine__body">Hidden-text payloads across repository content: Unicode tag-block characters, bidi overrides, variation-selector runs. Every finding decoded, not merely flagged. The decoder above is this engine's rule set, running on one piece of text. Runs from source today; no release yet. Source: <a href="https://github.com/PromptDecode/promptdecode">PromptDecode/promptdecode</a>.</p>
+        <h3 class="engine__name">content <span class="chip chip--shipping">built, not released</span></h3>
+        <p class="engine__body">Hidden-text payloads across repository content: Unicode tag-block characters, bidi overrides, variation-selector runs. Every finding decoded, not merely flagged. The decoder above is this engine's rule set, running on one piece of text. Built; no release of the scanner yet.</p>
         <pre class="term" aria-label="Illustration of content engine output"><span class="term__dim">$</span> promptdecode scan --engine content .
 
 <span class="term__dim">docs/CONTRIBUTING.md:42</span>
@@ -190,12 +190,12 @@
     <div class="sec__head" data-reveal>
       <p class="eyebrow">03 · Install <span class="chip chip--planned">not released</span></p>
       <h2 id="install-h">Three lines, when there is something to install.</h2>
-      <p class="lede">The Action is written (<a href="https://github.com/PromptDecode/action">PromptDecode/action</a>) and waits on the first scanner release. <code>promptdecode/action@v1</code> does not resolve today, so the snippet stays shown rather than offered for copying: pasting it into a workflow would fail the run.</p>
+      <p class="lede">The Action is written (<a href="https://github.com/PromptDecode/action">PromptDecode/action</a>) and waits on the first scanner release. <code>promptdecode/action@v1</code> is coming with v1 and does not resolve yet, so the snippet stays shown rather than offered for copying: pasting it into a workflow would fail the run.</p>
       <p class="lede">The intent it records: findings post as check annotations on the pull request. No account, no token exchange, and nothing leaving the runner.</p>
       <p class="lede">Want one email when it does? <a class="link-u" href="/waitlist">Join the waitlist</a>. It is a separate page, so this one stays offline.</p>
     </div>
     <div class="snip" data-reveal>
-      <p class="snip__bar"><span>.github/workflows/ci.yml</span><span class="chip chip--planned">not released</span></p>
+      <p class="snip__bar"><span>.github/workflows/ci.yml</span><span class="chip chip--planned">coming with v1</span></p>
       <pre class="term term--lg" aria-label="Illustration of the workflow step; not usable until @v1 resolves">- <span class="term__dim">uses:</span> promptdecode/action@v1
   <span class="term__dim">with:</span>
     <span class="term__dim">fail-on:</span> error</pre>
@@ -252,6 +252,7 @@
 <footer class="site-foot">
   <div class="foot">
     <span>&copy; 2026 promptdecode · a <a class="foot__fz" href="https://factory0.ventures">Factory Zero</a> venture</span>
+    <a href="https://factory0.ventures/ventures/promptdecode/"><img src="https://factory0.ventures/badge/promptdecode.svg" alt="Alpha · a Factory Zero venture" height="22"></a>
     <span class="foot__links">
       <a href="https://github.com/PromptDecode">GitHub</a>
       <a href="/llms.txt">llms.txt</a>
