@@ -5,6 +5,16 @@
   "page": "https://factory0.ventures/ventures/promptdecode/",
   "uses": [
     {
+      "id": "FZ-004",
+      "name": "Cratefield",
+      "kind": "factory-zero",
+      "url": "https://cratefield.com/",
+      "role": "framework",
+      "phrase": "Built with",
+      "status": "live",
+      "note": "The waitlist Worker at api.promptdeco.de runs on the Cratefield harness waitlist module."
+    },
+    {
       "id": "polar",
       "name": "Polar",
       "kind": "third-party",
@@ -23,6 +33,16 @@
       "phrase": "Deploys by",
       "status": "planned",
       "note": "Every venture site and Worker deployed from the Keep Shipping console."
+    },
+    {
+      "id": "google-fonts",
+      "name": "Google Fonts",
+      "kind": "third-party",
+      "url": "https://fonts.google.com",
+      "role": "fonts",
+      "phrase": "Typefaces from",
+      "status": "live",
+      "note": "The site’s typefaces (Instrument Serif, Instrument Sans, JetBrains Mono), loaded from Google."
     },
     {
       "id": "cloudflare",
