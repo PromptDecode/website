@@ -62,7 +62,7 @@ fi
 # create a project, it deploys the current working directory, and it scaffolds
 # a wrangler.jsonc with `"directory": "."` that republishes the whole checkout
 # on every later deploy.
-(cd "$tmp/tree" && npx --yes wrangler@4 deploy --message "$subject")
+(cd "$tmp/tree" && bunx wrangler@4 deploy --message "$subject")
 
 # What is live must be the allowlist and nothing else. A deploy that uploads
 # the repository instead of dist/ looks entirely successful, so the only way to
