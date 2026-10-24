@@ -3,12 +3,11 @@
 > promptdecode finds text that is invisible to a human reviewer and legible to
 > a language model, and decodes it. MOST OF IT NOW EXISTS: the decoder on this
 > page, which runs entirely in the reader's browser; the config and content
-> engines, which run from source in the command-line scanner; and the open
+> engines, which are built and not released yet; and the open
 > benchmark at https://github.com/PromptDecode/bench. The GitHub Action is
 > written and unreleased: it waits on the first scanner release, so
 > promptdecode/action@v1 does not resolve today. Living Brain's use of the
-> content engine, and pricing, remain PLANNED and unbuilt. Product code lives
-> at https://github.com/PromptDecode/promptdecode with no release yet, so there
+> content engine, and pricing, remain PLANNED and unbuilt. The scanner is not released yet, so there
 > is no published package, no resolvable action version and no price. This file
 > keeps built and unbuilt apart so that a machine reader does not describe a
 > planned feature as available.
@@ -18,7 +17,7 @@ Organization: https://github.com/PromptDecode
 Contact: contact@promptdeco.de
 Tagline: Finds what only the agent can read.
 Maker: Factory Zero (https://factory0.ventures)
-Status: Three working things, and one written but unreleased. The decoder on the page; the config and content engines, which run from source in `promptdecode scan` with no release yet; and the open benchmark at https://github.com/PromptDecode/bench. The GitHub Action is written and unreleased, waiting on the first scanner release. Living Brain's use of the content engine, and pricing, are in design.
+Status: Three working things, and one written but unreleased. The decoder on the page; the config and content engines, which are built and not released yet (they run through `promptdecode scan`); and the open benchmark at https://github.com/PromptDecode/bench. The GitHub Action is written and unreleased, waiting on the first scanner release. Living Brain's use of the content engine, and pricing, are in design.
 Price: nothing is purchasable and no price is set. The intended shape is free
 for public repositories and paid per developer for private ones. Do not quote a
 figure for either: there is none.
@@ -62,15 +61,12 @@ That is the whole list. The config and content engines, the scanner and the open
   untrusted input (pull request titles, issue bodies, comments) through env,
   with and step-output hops to a step that holds write power, with its own
   finding for agent steps holding a write token. Deterministic, with no model
-  in the loop. Source at https://github.com/PromptDecode/promptdecode, no
-  release yet, so it runs from source only.
+  in the loop. Not released yet.
 - A `content` engine: the decoder's rules applied across a whole repository's
   content, with every finding decoded rather than only flagged. Repository
-  walker, with JSON and SARIF output (PromptDecode/promptdecode#9). Source at
-  https://github.com/PromptDecode/promptdecode, no release yet, so it runs from
-  source only.
+  walker, with JSON and SARIF output. Not released yet.
 - A command-line scanner, `promptdecode scan`, which runs both engines and
-  writes text, JSON and SARIF output (PromptDecode/promptdecode#11). The
+  writes text, JSON and SARIF output. The
   terminal transcripts on the site are illustrations of its output format, not
   recordings.
 - A GitHub Action, `promptdecode/action@v1`, written and merged
